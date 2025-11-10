@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Opak Singkong Berkah Jaya</title>
+  <style>
+    :root{ --bg:#FBF5EE; --accent:#8B5E34; --muted:#6B5748; --card:#FFF7F0; --radius:14px; --container:1000px; font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial; }
+    *{box-sizing:border-box}
+    body{background:var(--bg); color:var(--accent); margin:0; -webkit-font-smoothing:antialiased}
+    .wrap{max-width:var(--container); margin:28px auto; padding:28px}
+    header{display:flex; align-items:center; justify-content:space-between}
+    .brand{display:flex; align-items:center; gap:14px}
+    .logo{width:64px; height:64px; border-radius:12px; background:linear-gradient(135deg,#F6D6A8,#F0B66A); display:flex; align-items:center; justify-content:center}
+    .logo svg{width:40px;height:40px}
+    nav a{margin-left:18px; color:var(--muted); text-decoration:none; font-weight:700}
+
+    .hero{display:flex; gap:28px; align-items:flex-start; margin-top:22px}
+    .left{flex:1}
+    .right{width:360px}
+    h1{font-size:40px; margin:0; color:var(--accent)}
+    p.lead{color:var(--muted); font-size:18px}
+
+    .product-card{background:var(--card); border-radius:12px; padding:16px; box-shadow:0 8px 24px rgba(102,78,57,0.06)}
+    .product-img{width:100%; height:260px; object-fit:cover; border-radius:10px; background:#eee}
+    .info{margin-top:12px}
+    .price{color:var(--accent); font-weight:800; font-size:20px}
+
+    .contact{margin-top:18px; display:flex; gap:12px; align-items:center}
+    .btn{display:inline-block; text-decoration:none; padding:10px 14px; border-radius:10px; font-weight:800}
+    .btn-wa{background:#25D366; color:white}
+    .btn-store{background:var(--accent); color:white}
+
+    footer{margin-top:28px; color:var(--muted); font-size:14px}
+
+    @media (max-width:900px){.hero{flex-direction:column}.right{width:100%}.product-img{height:200px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden>
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 18c3-4 8-6 12-6s9 2 10 6H2z" fill="#9B6A2D"/><path d="M12 3v6" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div>
+          <div style="font-weight:800">Opak Singkong</div>
+          <div style="font-size:13px;color:var(--muted);font-weight:700">Berkah Jaya — Desa Tumiyang</div>
+        </div>
+      </div>
+      <nav>
+        <a href="#produk">Produk</a>
+        <a href="#kontak">Kontak</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div class="left">
+        <h1>Opak Singkong Berkah Jaya</h1>
+        <p class="lead">Opak singkong home-made, renyah dan gurih dibuat dari singkong pilihan oleh pelaku UMKM Desa Tumiyang. Cocok untuk oleh-oleh, camilan keluarga, dan dijual kembali.</p>
+
+        <div class="product-card">
+          <!-- image: replace /assets/opak-sample.jpg with actual image path -->
+          <img class="product-img" src="/assets/opak-sample.jpg" alt="Opak Singkong Berkah Jaya" />
+          <div class="info">
+            <h3 style="margin:8px 0 6px">Opak Singkong Original</h3>
+            <div class="price">Rp 20.000 / 250 gr</div>
+            <p style="color:var(--muted); margin-top:8px">Rasa original, renyah, tanpa pengawet. Dikemas rapi dan cocok untuk penjualan online.</p>
+
+            <div class="contact">
+              <!-- WhatsApp direct chat link (replace number with seller number in international format, no plus sign) -->
+              <a class="btn btn-wa" href="https://wa.me/62812xxxxxxxx?text=Halo%20Opak%20Berkah%20Jaya%2C%20saya%20ingin%20memesan" target="_blank" rel="noopener">Hubungi via WhatsApp</a>
+
+              <!-- E-commerce link (replace with actual store URL) -->
+              <a class="btn btn-store" href="https://www.tokopedia.com/opaksingkong-berkahjaya" target="_blank" rel="noopener">Beli di E-Commerce</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <aside class="right">
+        <div class="product-card">
+          <h4 style="margin:6px 0">Informasi Produk</h4>
+          <ul style="color:var(--muted); margin:8px 0 0 18px">
+            <li>Bahan: Singkong lokal pilihan</li>
+            <li>Varian: Original, dan balado</li>
+            <li>Berat: 250 gr / kemasan</li>
+            <li>Kemasan: Vacuum-sealed / zipper pouch</li>
+          </ul>
+
+          <div style="margin-top:12px">
+            <h4 style="margin:6px 0">Alamat</h4>
+            <p style="color:var(--muted); margin:6px 0"> Desa Tumiyang, Kabupaten Y</p>
+          </div>
+
+          <div style="margin-top:12px">
+            <h4 style="margin:6px 0">Jam Operasional</h4>
+            <p style="color:var(--muted); margin:6px 0">Senin–Sabtu, 08:00–16:00</p>
+          </div>
+        </div>
+
+        <div style="margin-top:14px" class="product-card">
+          <h4 style="margin:6px 0">Kontak Cepat</h4>
+          <p style="margin:8px 0;color:var(--muted)">Telepon / WhatsApp: <a href="https://wa.me/62812xxxxxxxx" target="_blank" rel="noopener">0812-xxxx-xxxx</a></p>
+          <p style="margin:8px 0;color:var(--muted)">Email: <a href="mailto:opaksingkong@example.com">opaksingkong@example.com</a></p>
+          <p style="margin:8px 0;color:var(--muted)">Toko Online: <a href="https://www.tokopedia.com/opaksingkong-berkahjaya" target="_blank" rel="noopener">Tokopedia - Opak Berkah Jaya</a></p>
+        </div>
+      </aside>
+    </section>
+
+    <section id="produk" style="margin-top:22px">
+      <h3 style="margin:0 0 8px">Mengapa Memilih Opak Kami?</h3>
+      <p style="color:var(--muted); margin:0 0 18px">Dibuat tradisional dengan bahan lokal berkualitas, tanpa pengawet, dan dikemas rapi untuk menjaga kerenyahan.</p>
+
+      <div style="display:flex;gap:12px; flex-wrap:wrap">
+        <div style="flex:1; min-width:220px" class="product-card">
+          <h4 style="margin:6px 0">Rasa Otentik</h4>
+          <p style="color:var(--muted); margin:6px 0">Rasa khas yang sudah dipercaya pelanggan lokal.</p>
+        </div>
+        <div style="flex:1; min-width:220px" class="product-card">
+          <h4 style="margin:6px 0">Kemasan Aman</h4>
+          <p style="color:var(--muted); margin:6px 0">Dikemas untuk menjaga kualitas selama pengiriman.</p>
+        </div>
+    </section>
+
+    <section id="kontak" style="margin-top:22px">
+      <div class="product-card">
+        <h3 style="margin:6px 0">Pesan Sekarang</h3>
+        <p style="color:var(--muted); margin:6px 0 12px">Klik tautan WhatsApp untuk chat cepat atau kunjungi toko online kami untuk pembelian langsung.</p>
+        <div class="contact">
+          <a class="btn btn-wa" href="https://wa.me/62812xxxxxxxx?text=Halo%20saya%20ingin%20memesan%20Opak" target="_blank" rel="noopener">Chat WhatsApp</a>
+          <a class="btn btn-store" href="https://www.tokopedia.com/opaksingkong-berkahjaya" target="_blank" rel="noopener">Kunjungi Toko Online</a>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <p>&copy; 2025 Opak Singkong Berkah Jaya — Dukungan Innovillage Telkom</p>
+    </footer>
+  </div>
+</body>
+</html>

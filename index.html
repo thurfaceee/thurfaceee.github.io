@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>E-Pengaduan Wanasari – Polsek Wanasari</title>
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; color: #1a1a2e; background: #f8f9fc; font-size: 15px; }
+
+    /* ===== TOKENS ===== */
+    :root {
+      --navy:     #1a237e;
+      --navy-mid: #283593;
+      --navy-dark:#0d1457;
+      --blue:     #3b5bdb;
+      --blue-lt:  #4dabf7;
+      --accent:   #1e90ff;
+      --gold:     #f59f00;
+      --red:      #c0392b;
+      --green:    #2ecc71;
+      --gray-100: #f8f9fc;
+      --gray-200: #e9ecef;
+      --gray-400: #ced4da;
+      --gray-600: #6c757d;
+      --gray-800: #343a40;
+      --white:    #ffffff;
+      --shadow:   0 2px 16px rgba(26,35,126,.10);
+      --radius:   10px;
+    }
+
+    /* ===== NAV ===== */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: #fff;
+      box-shadow: 0 1px 8px rgba(0,0,0,.08);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 60px;
+    }
+    .nav-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; color: var(--navy); text-decoration: none; }
+    .nav-brand svg { width: 28px; height: 28px; }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-links a { text-decoration: none; color: var(--gray-800); font-size: 14px; font-weight: 500; padding-bottom: 2px; transition: color .2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--navy); }
+    .nav-links a.active { border-bottom: 2px solid var(--blue); }
+    .btn-lapor {
+      background: var(--navy-dark); color: #fff; border: none; border-radius: 6px;
+      padding: 9px 22px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .2s;
+    }
+    .btn-lapor:hover { background: var(--blue); }
+
+    /* ===== PAGE SWITCHING ===== */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ===== HERO ===== */
+    .hero {
+      background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 55%, var(--navy-mid) 100%);
+      color: #fff; padding: 72px 48px 64px;
+      display: grid; grid-template-columns: 1fr 400px; gap: 48px; align-items: center;
+    }
+    .hero h1 { font-size: 42px; font-weight: 800; line-height: 1.15; margin-bottom: 16px; }
+    .hero p { font-size: 15px; color: rgba(255,255,255,.75); margin-bottom: 32px; max-width: 440px; }
+    .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn-primary {
+      background: #fff; color: var(--navy); border: none; border-radius: 8px;
+      padding: 13px 28px; font-size: 14px; font-weight: 700; cursor: pointer; transition: all .2s;
+    }
+    .btn-primary:hover { background: var(--gray-200); }
+    .btn-outline {
+      background: transparent; color: #fff; border: 2px solid rgba(255,255,255,.55);
+      border-radius: 8px; padding: 13px 28px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all .2s;
+    }
+    .btn-outline:hover { border-color: #fff; background: rgba(255,255,255,.1); }
+    .hero-card {
+      background: #fff; border-radius: 14px; padding: 24px 28px;
+      box-shadow: 0 8px 32px rgba(0,0,0,.22);
+    }
+    .hero-card .label { font-size: 11px; font-weight: 700; color: var(--gray-600); letter-spacing: 1px; text-transform: uppercase; }
+    .hero-card .kode { font-size: 26px; font-weight: 800; color: var(--navy); margin: 6px 0 16px; }
+    .hero-card-row { display: flex; justify-content: space-between; align-items: center; }
+    .hero-card-row .kat { font-size: 14px; font-weight: 600; color: var(--gray-800); }
+    .badge-wait { background: #fff3cd; color: #856404; border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 700; }
+    .badge-proses { background: #cfe2ff; color: #0a58ca; border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 700; }
+    .badge-selesai { background: #d1e7dd; color: #0f5132; border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 700; }
+    .badge-tolak { background: #f8d7da; color: #842029; border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 700; }
+    .hero-card-icon { display: flex; justify-content: flex-end; margin-bottom: 12px; }
+    .hero-card-icon svg { width: 22px; height: 22px; opacity: .4; }
+
+    /* ===== SECTION HEADERS ===== */
+    .sec-header { text-align: center; margin-bottom: 40px; }
+    .sec-header h2 { font-size: 26px; font-weight: 800; color: var(--gray-800); }
+    .sec-header h2::after { content: ''; display: block; width: 44px; height: 3px; background: var(--blue); border-radius: 2px; margin: 10px auto 0; }
+    .sec-header p { color: var(--gray-600); margin-top: 10px; font-size: 14px; }
+
+    /* ===== LAYANAN CARDS ===== */
+    .section-layanan { padding: 72px 48px; background: #fff; }
+    .layanan-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
+    .layanan-card {
+      border: 1px solid var(--gray-200); border-radius: var(--radius);
+      padding: 28px 24px; transition: box-shadow .2s;
+    }
+    .layanan-card:hover { box-shadow: var(--shadow); }
+    .layanan-icon {
+      width: 46px; height: 46px; background: #eef2ff; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center; margin-bottom: 16px;
+    }
+    .layanan-icon svg { width: 22px; height: 22px; color: var(--blue); }
+    .layanan-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .layanan-card p { font-size: 13px; color: var(--gray-600); line-height: 1.6; }
+
+    /* ===== PROSEDUR ===== */
+    .section-prosedur { padding: 72px 48px; background: var(--gray-100); }
+    .prosedur-steps { display: flex; align-items: flex-start; justify-content: center; gap: 0; position: relative; }
+    .step { text-align: center; flex: 1; max-width: 180px; }
+    .step-connector {
+      flex: 1; height: 2px; background: var(--gray-400); margin-top: 36px; max-width: 80px;
+    }
+    .step-icon {
+      width: 72px; height: 72px; border-radius: 50%; border: 2px solid var(--blue);
+      display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;
+      background: #fff;
+    }
+    .step-icon svg { width: 30px; height: 30px; color: var(--blue); }
+    .step h4 { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+    .step p { font-size: 12px; color: var(--gray-600); }
+
+    /* ===== FEATURE GRID ===== */
+    .section-feature { padding: 72px 48px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 28px; background: #fff; }
+    .feature-img {
+      border-radius: 14px; overflow: hidden; position: relative; min-height: 280px;
+      background: linear-gradient(180deg, #1a1a2e 0%, #23395d 100%);
+      display: flex; flex-direction: column; justify-content: flex-end; padding: 28px;
+    }
+    .feature-img-overlay h3 { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 8px; }
+    .feature-img-overlay p { font-size: 13px; color: rgba(255,255,255,.7); }
+    .feature-right { display: flex; flex-direction: column; gap: 20px; }
+    .feature-card {
+      border-radius: 14px; padding: 28px 24px;
+    }
+    .feature-card.blue-lt { background: #eef2ff; }
+    .feature-card.dark { background: #1a1a2e; color: #fff; }
+    .feature-number { font-size: 48px; font-weight: 900; color: var(--blue); line-height: 1; }
+    .feature-number span { font-size: 22px; }
+    .feature-subtitle { font-weight: 700; font-size: 14px; margin: 4px 0 6px; }
+    .feature-desc { font-size: 13px; color: var(--gray-600); }
+    .feature-card.dark .feature-subtitle { color: #fff; }
+    .feature-card.dark .feature-desc { color: rgba(255,255,255,.6); }
+    .feature-shield { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .feature-shield svg { width: 22px; height: 22px; color: #4dabf7; }
+    .feature-shield span { font-size: 14px; font-weight: 700; color: #fff; }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: #0d1457; color: rgba(255,255,255,.7);
+      padding: 36px 48px 24px; text-align: center;
+    }
+    .footer-brand { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 18px; font-weight: 700; color: #fff; font-size: 15px; }
+    .footer-links { display: flex; justify-content: center; gap: 32px; margin-bottom: 20px; }
+    .footer-links a { color: rgba(255,255,255,.65); text-decoration: none; font-size: 13px; }
+    .footer-links a:hover { color: #fff; }
+    .footer-copy { font-size: 12px; color: rgba(255,255,255,.4); }
+    .footer-disclaimer { font-size: 11px; color: rgba(255,255,255,.3); margin-top: 8px; max-width: 620px; margin-left: auto; margin-right: auto; }
+
+    /* ===== HERO SECTION (INFORMASI LAYANAN) ===== */
+    .page-hero {
+      background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 70%);
+      color: #fff; padding: 56px 48px 48px;
+    }
+    .page-hero h1 { font-size: 36px; font-weight: 800; margin-bottom: 10px; }
+    .page-hero p { font-size: 15px; color: rgba(255,255,255,.75); max-width: 560px; }
+    .alert-info {
+      background: #fff8e1; border-left: 4px solid var(--gold); border-radius: 6px;
+      padding: 14px 20px; margin: 24px 48px; display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: #5d4037;
+    }
+    .alert-info svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; color: var(--gold); }
+
+    /* ===== KATEGORI GRID ===== */
+    .section-kategori { padding: 56px 48px 32px; background: #fff; }
+    .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; color: var(--blue); text-transform: uppercase; margin-bottom: 6px; text-align: center; }
+    .kategori-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 18px; margin-top: 32px; }
+    .kat-card {
+      border: 1px solid var(--gray-200); border-radius: var(--radius);
+      padding: 22px 18px; display: flex; flex-direction: column; gap: 10px; transition: box-shadow .2s;
+    }
+    .kat-card:hover { box-shadow: var(--shadow); }
+    .kat-icon {
+      width: 44px; height: 44px; background: #1a1a2e; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .kat-icon svg { width: 22px; height: 22px; color: var(--blue-lt); }
+    .kat-card h3 { font-size: 14px; font-weight: 700; }
+    .kat-card p { font-size: 12px; color: var(--gray-600); line-height: 1.55; }
+    .kat-card.wide { grid-column: span 2; flex-direction: row; align-items: center; gap: 16px; }
+    .kat-card.wide .kat-icon { flex-shrink: 0; }
+    .kat-card.full { grid-column: span 4; flex-direction: row; align-items: center; }
+    .kat-card.full .kat-icon { flex-shrink: 0; }
+    .kat-card.full .kat-info { flex: 1; }
+    .btn-pilih { background: var(--gray-100); border: 1px solid var(--gray-200); border-radius: 6px; padding: 7px 18px; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .btn-pilih:hover { background: var(--gray-200); }
+
+    /* ===== ALUR PELAPORAN ===== */
+    .section-alur { padding: 64px 48px; background: var(--gray-100); }
+    .alur-steps { display: flex; align-items: flex-start; justify-content: center; gap: 0; margin-top: 40px; }
+    .alur-step { text-align: center; flex: 1; max-width: 160px; }
+    .alur-conn { flex: 1; height: 2px; background: var(--gray-400); margin-top: 36px; max-width: 60px; }
+    .alur-circle {
+      width: 72px; height: 72px; border-radius: 50%;
+      border: 2px solid var(--gray-400);
+      background: #fff; display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 12px; position: relative;
+    }
+    .alur-circle.done { border-color: var(--navy); background: var(--navy); }
+    .alur-circle.done svg { color: #fff; }
+    .alur-circle svg { width: 28px; height: 28px; color: var(--gray-600); }
+    .alur-num {
+      position: absolute; top: -6px; right: -6px;
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--gray-400); color: #fff;
+      font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+    }
+    .alur-circle.done .alur-num { background: var(--blue); }
+    .alur-step h4 { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+    .alur-step p { font-size: 12px; color: var(--gray-600); }
+
+    /* ===== CTA BANNER ===== */
+    .cta-banner {
+      background: linear-gradient(135deg, #0d1457 0%, #1a237e 60%, #283593 100%);
+      padding: 60px 48px; display: flex; align-items: center; justify-content: space-between; gap: 32px;
+    }
+    .cta-text h2 { font-size: 30px; font-weight: 800; color: #fff; margin-bottom: 10px; }
+    .cta-text p { font-size: 14px; color: rgba(255,255,255,.72); max-width: 380px; }
+    .cta-btns { display: flex; gap: 14px; flex-wrap: wrap; flex-shrink: 0; }
+    .btn-blue {
+      background: var(--blue); color: #fff; border: none; border-radius: 8px;
+      padding: 13px 28px; font-size: 14px; font-weight: 700; cursor: pointer;
+      display: flex; align-items: center; gap: 7px; transition: background .2s;
+    }
+    .btn-blue:hover { background: #2f4ac0; }
+    .btn-white-outline {
+      background: transparent; color: #fff; border: 2px solid rgba(255,255,255,.55);
+      border-radius: 8px; padding: 13px 28px; font-size: 14px; font-weight: 600; cursor: pointer;
+      transition: all .2s;
+    }
+    .btn-white-outline:hover { border-color: #fff; }
+
+    /* ===== BUAT PENGADUAN FORM ===== */
+    .section-form { padding: 56px 48px; display: grid; grid-template-columns: 1fr 340px; gap: 28px; align-items: flex-start; }
+    .form-card { background: #fff; border: 1px solid var(--gray-200); border-radius: 14px; padding: 36px 32px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--gray-800); margin-bottom: 7px; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; border: 1px solid var(--gray-400); border-radius: 8px;
+      padding: 11px 14px; font-size: 14px; color: var(--gray-800); background: #fff;
+      transition: border-color .2s; outline: none; font-family: inherit;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,91,219,.12);
+    }
+    .form-group textarea { resize: vertical; min-height: 120px; }
+    .upload-box {
+      border: 2px dashed var(--gray-400); border-radius: 8px; padding: 14px 18px;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      cursor: pointer; font-size: 13px; color: var(--gray-600); transition: border-color .2s;
+    }
+    .upload-box:hover { border-color: var(--blue); color: var(--blue); }
+    .upload-box svg { width: 18px; height: 18px; }
+    .form-check { display: flex; align-items: flex-start; gap: 10px; margin: 16px 0 28px; }
+    .form-check input[type=checkbox] { margin-top: 2px; width: 16px; height: 16px; flex-shrink: 0; }
+    .form-check label { font-size: 13px; color: var(--gray-600); line-height: 1.5; }
+    .btn-submit {
+      background: var(--navy-dark); color: #fff; border: none; border-radius: 8px;
+      padding: 14px 32px; font-size: 15px; font-weight: 700; cursor: pointer;
+      display: flex; align-items: center; gap: 8px; transition: background .2s;
+    }
+    .btn-submit:hover { background: var(--blue); }
+    .form-divider { border: none; border-top: 1px solid var(--gray-200); margin: 24px 0; }
+
+    /* sidebar */
+    .form-sidebar { display: flex; flex-direction: column; gap: 20px; }
+    .sidebar-card { background: #fff; border: 1px solid var(--gray-200); border-radius: 12px; padding: 22px 20px; }
+    .sidebar-card h4 { font-size: 14px; font-weight: 700; color: var(--blue); display: flex; align-items: center; gap: 7px; margin-bottom: 14px; }
+    .sidebar-card h4 svg { width: 17px; height: 17px; }
+    .sidebar-steps { display: flex; flex-direction: column; gap: 10px; }
+    .sidebar-step { display: flex; gap: 10px; align-items: flex-start; }
+    .sidebar-step-num {
+      width: 22px; height: 22px; border-radius: 50%; background: var(--navy); color: #fff;
+      font-size: 11px; font-weight: 700; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    }
+    .sidebar-step p { font-size: 13px; color: var(--gray-700); line-height: 1.5; }
+    .emergency-card { background: #fff; border: 1px solid var(--gray-200); border-radius: 12px; padding: 20px; }
+    .emergency-title { color: var(--red); font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+    .emergency-title svg { width: 16px; height: 16px; }
+    .emergency-desc { font-size: 13px; color: var(--gray-600); margin-bottom: 14px; }
+    .btn-emergency {
+      background: var(--red); color: #fff; border: none; border-radius: 8px;
+      padding: 12px 18px; font-size: 14px; font-weight: 700; cursor: pointer; width: 100%;
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+    }
+    .map-thumb { border-radius: 10px; overflow: hidden; height: 140px; margin-top: 4px; }
+    .map-placeholder {
+      width: 100%; height: 100%;
+      background: linear-gradient(145deg, #2c3e50 0%, #3d5a73 50%, #1a3a4a 100%);
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,.7); font-size: 13px;
+    }
+
+    /* ===== CEK STATUS ===== */
+    .section-cek { padding: 56px 48px; }
+    .cek-hero {
+      background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 60%);
+      padding: 60px 48px 80px; text-align: center; color: #fff;
+    }
+    .cek-hero h1 { font-size: 34px; font-weight: 800; margin-bottom: 12px; }
+    .cek-hero p { font-size: 15px; color: rgba(255,255,255,.75); max-width: 540px; margin: 0 auto; }
+    .cek-box-wrap { display: flex; justify-content: center; margin-top: -32px; padding: 0 48px; }
+    .cek-box { background: #fff; border-radius: 14px; padding: 28px 32px; box-shadow: 0 8px 32px rgba(0,0,0,.12); width: 100%; max-width: 620px; }
+    .cek-box label { font-size: 13px; font-weight: 600; color: var(--gray-800); display: block; margin-bottom: 10px; }
+    .cek-input-row { display: flex; gap: 12px; }
+    .cek-input-row input {
+      flex: 1; border: 1px solid var(--gray-400); border-radius: 8px;
+      padding: 12px 16px 12px 42px; font-size: 14px; outline: none;
+      background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236c757d' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat 14px center;
+      transition: border-color .2s;
+    }
+    .cek-input-row input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,91,219,.12); }
+    .btn-cari { background: var(--navy-dark); color: #fff; border: none; border-radius: 8px; padding: 12px 24px; font-size: 14px; font-weight: 700; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
+    .btn-cari:hover { background: var(--blue); }
+
+    /* hasil pencarian */
+    .hasil-wrap { padding: 32px 48px 56px; max-width: 780px; margin: 0 auto; }
+    .hasil-card { background: #fff; border: 1px solid var(--gray-200); border-radius: 14px; overflow: hidden; }
+    .hasil-header { padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--gray-200); }
+    .hasil-header h3 { font-size: 18px; font-weight: 800; }
+    .hasil-body { padding: 24px; display: grid; grid-template-columns: 1fr 1fr 200px; gap: 16px 24px; }
+    .info-field .lbl { font-size: 11px; color: var(--gray-600); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
+    .info-field .val { font-size: 15px; font-weight: 700; }
+    .hasil-img { grid-row: span 2; border-radius: 10px; overflow: hidden; }
+    .hasil-img .img-placeholder { width: 100%; height: 100%; min-height: 140px; background: linear-gradient(145deg, #1a1a2e, #2c3e50); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; color: rgba(255,255,255,.6); font-size: 12px; text-align: center; padding: 12px; }
+    .catatan-admin { border: 1px dashed var(--gray-400); border-radius: 8px; padding: 14px; grid-column: span 2; }
+    .catatan-admin .cat-lbl { font-size: 12px; color: var(--gray-600); display: flex; align-items: center; gap: 5px; margin-bottom: 6px; }
+    .catatan-admin p { font-size: 13px; font-style: italic; color: var(--gray-800); }
+    .progress-wrap { border-top: 1px solid var(--gray-200); padding: 20px 24px; }
+    .progress-steps { display: flex; align-items: flex-start; justify-content: space-between; }
+    .prog-step { text-align: center; flex: 1; }
+    .prog-conn { flex: 1; height: 2px; background: var(--gray-200); margin-top: 18px; }
+    .prog-conn.done { background: var(--blue); }
+    .prog-circle {
+      width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--gray-300);
+      background: #fff; display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 6px; font-size: 13px; font-weight: 700; color: var(--gray-500);
+    }
+    .prog-circle.done { background: var(--blue); border-color: var(--blue); color: #fff; }
+    .prog-circle.active { background: #fff; border-color: var(--blue); color: var(--blue); }
+    .prog-step h5 { font-size: 12px; font-weight: 700; color: var(--gray-700); }
+    .prog-step .prog-sub { font-size: 11px; color: var(--gray-500); margin-top: 2px; }
+
+    /* ===== KONTAK ===== */
+    .section-kontak { padding: 56px 48px; }
+    .kontak-grid { display: grid; grid-template-columns: 1fr 1.3fr; gap: 28px; }
+    .kontak-card { background: #fff; border: 1px solid var(--gray-200); border-radius: 14px; padding: 28px 24px; }
+    .kontak-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+    .kontak-brand svg { width: 36px; height: 36px; }
+    .kontak-brand h3 { font-size: 17px; font-weight: 700; }
+    .kontak-brand p { font-size: 12px; color: var(--gray-600); }
+    .kontak-row { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
+    .kontak-row svg { width: 18px; height: 18px; color: var(--blue); flex-shrink: 0; margin-top: 1px; }
+    .kontak-row .klabel { font-size: 12px; font-weight: 700; color: var(--gray-800); }
+    .kontak-row .kval { font-size: 13px; color: var(--gray-600); }
+    .darurat-box { background: #fff5f5; border-left: 3px solid var(--red); border-radius: 6px; padding: 14px 16px; margin-top: 16px; }
+    .darurat-title { font-size: 13px; font-weight: 700; color: var(--red); display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+    .darurat-desc { font-size: 12px; color: var(--gray-600); }
+    .map-big { height: 160px; border-radius: 10px; overflow: hidden; margin-top: 16px; }
+    .map-big .map-placeholder { font-size: 14px; }
+    .faq-card { background: #fff; border: 1px solid var(--gray-200); border-radius: 14px; padding: 28px 24px; }
+    .faq-card h3 { font-size: 17px; font-weight: 700; display: flex; align-items: center; gap: 8px; margin-bottom: 18px; }
+    .faq-card h3 svg { width: 20px; height: 20px; color: var(--blue); }
+    .faq-item { border: 1px solid var(--gray-200); border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
+    .faq-q {
+      width: 100%; text-align: left; background: #fff; padding: 14px 18px;
+      font-size: 14px; font-weight: 600; cursor: pointer; border: none;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    }
+    .faq-q:hover { background: var(--gray-100); }
+    .faq-q svg { width: 18px; height: 18px; color: var(--gray-500); flex-shrink: 0; transition: transform .2s; }
+    .faq-q.open svg { transform: rotate(180deg); }
+    .faq-a { display: none; padding: 0 18px 14px; font-size: 13px; color: var(--gray-600); line-height: 1.6; }
+    .faq-a.open { display: block; }
+    .faq-contact { background: var(--gray-100); border-radius: 8px; padding: 18px; text-align: center; margin-top: 4px; }
+    .faq-contact p { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+    .faq-contact small { font-size: 12px; color: var(--gray-600); }
+    .btn-chat {
+      display: inline-flex; align-items: center; gap: 7px;
+      margin-top: 12px; background: #fff; border: 1px solid var(--gray-400);
+      border-radius: 8px; padding: 10px 20px; font-size: 13px; font-weight: 600; cursor: pointer;
+    }
+    .btn-chat:hover { background: var(--gray-100); }
+
+    /* ===== SUCCESS PAGE ===== */
+    .success-page { min-height: 60vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 24px; background: var(--gray-100); }
+    .success-icon { width: 96px; height: 96px; border-radius: 50%; background: #d1e7dd; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; position: relative; }
+    .success-icon svg { width: 44px; height: 44px; color: var(--green); }
+    .success-dot1, .success-dot2 { position: absolute; border-radius: 50%; background: var(--blue); }
+    .success-dot1 { width: 10px; height: 10px; top: -4px; right: 4px; }
+    .success-dot2 { width: 6px; height: 6px; bottom: 2px; left: -4px; }
+    .success-page h2 { font-size: 30px; font-weight: 800; margin-bottom: 10px; text-align: center; }
+    .success-page p { font-size: 14px; color: var(--gray-600); max-width: 400px; text-align: center; margin-bottom: 28px; }
+    .kode-box { background: #fff; border: 1px solid var(--gray-200); border-radius: 14px; padding: 24px 48px; text-align: center; margin-bottom: 28px; }
+    .kode-box .klabel { font-size: 11px; font-weight: 700; letter-spacing: 1px; color: var(--gray-600); text-transform: uppercase; margin-bottom: 8px; }
+    .kode-box .kode-val { font-size: 28px; font-weight: 900; color: var(--navy); display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .kode-box .kode-val svg { width: 20px; height: 20px; color: var(--blue); cursor: pointer; }
+    .kode-box .kode-dots { display: flex; align-items: center; justify-content: center; gap: 4px; margin-top: 8px; }
+    .kode-dot { width: 24px; height: 3px; background: var(--blue); border-radius: 2px; }
+    .kode-dot.gray { background: var(--gray-300); }
+    .success-btns { display: flex; gap: 14px; }
+    .btn-dark { background: var(--navy-dark); color: #fff; border: none; border-radius: 8px; padding: 13px 24px; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 7px; }
+    .btn-dark:hover { background: var(--blue); }
+    .btn-light { background: #fff; color: var(--gray-800); border: 1px solid var(--gray-400); border-radius: 8px; padding: 13px 24px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 7px; }
+    .btn-light:hover { background: var(--gray-100); }
+    .success-help { margin-top: 20px; font-size: 13px; color: var(--gray-500); display: flex; align-items: center; gap: 5px; }
+    .success-help svg { width: 15px; height: 15px; }
+  </style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav id="main-nav">
+  <a class="nav-brand" href="#" onclick="showPage('beranda')">
+    <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M18 3L5 9v10c0 8.5 6.5 14.5 13 16.5 6.5-2 13-8 13-16.5V9L18 3z" fill="#1a237e"/>
+      <path d="M18 3L5 9v10c0 8.5 6.5 14.5 13 16.5V3z" fill="#283593" opacity=".7"/>
+      <line x1="18" y1="12" x2="18" y2="24" stroke="#4dabf7" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="12" y1="18" x2="24" y2="18" stroke="#4dabf7" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+    E-Pengaduan Wanasari
+  </a>
+  <div class="nav-links" id="nav-links">
+    <a href="#" class="active" id="nav-beranda" onclick="showPage('beranda')">Beranda</a>
+    <a href="#" id="nav-info" onclick="showPage('info')">Informasi Layanan</a>
+    <a href="#" id="nav-buat" onclick="showPage('buat')">Buat Pengaduan</a>
+    <a href="#" id="nav-cek" onclick="showPage('cek')">Cek Status</a>
+    <a href="#" id="nav-kontak" onclick="showPage('kontak')">Kontak</a>
+  </div>
+  <button class="btn-lapor" onclick="showPage('buat')">Lapor!</button>
+</nav>
+
+<!-- ==================== PAGE: BERANDA ==================== -->
+<div id="page-beranda" class="page active">
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-text">
+      <h1>Sistem Pengaduan Masyarakat Polsek Wanasari</h1>
+      <p>Website     pengaduan masyarakat berbasis web untuk membantu proses penyampaian laporan secara digital.</p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="showPage('buat')">Buat Pengaduan</button>
+        <button class="btn-outline" onclick="showPage('cek')">Cek Status Pengaduan</button>
+      </div>
+    </div>
+    <div class="hero-card">
+      <div class="hero-card-icon">
+        <svg fill="none" stroke="#1a237e" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div class="label">PREVIEW LAPORAN</div>
+      <div class="kode">WNS-2026-00124</div>
+      <div class="hero-card-row">
+        <div>
+          <div style="font-size:11px;color:#6c757d;text-transform:uppercase;letter-spacing:.5px;">Kategori</div>
+          <div class="kat" style="margin-top:4px;">Gangguan Keamanan</div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:#6c757d;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Status</div>
+          <span class="badge-wait">Menunggu Verifikasi</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Layanan Utama -->
+  <section class="section-layanan">
+    <div class="sec-header">
+      <h2>Layanan Utama Kami</h2>
+    </div>
+    <div class="layanan-grid">
+      <div class="layanan-card">
+        <div class="layanan-icon">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </div>
+        <h3>Pengaduan Online</h3>
+        <p>Masyarakat dapat mengirim laporan secara digital melalui formulir pengaduan dengan mudah dan cepat.</p>
+      </div>
+      <div class="layanan-card">
+        <div class="layanan-icon">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </div>
+        <h3>Cek Status Laporan</h3>
+        <p>Pelapor dapat mengecek perkembangan laporan secara real-time menggunakan kode pengaduan yang diberikan.</p>
+      </div>
+      <div class="layanan-card">
+        <div class="layanan-icon">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+        </div>
+        <h3>Upload Bukti</h3>
+        <p>Pelapor dapat menambahkan foto atau dokumen sebagai bukti pendukung untuk memperkuat laporan.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Prosedur -->
+  <section class="section-prosedur">
+    <div class="sec-header">
+      <h2>Prosedur Pengaduan</h2>
+      <p>Ikuti langkah-langkah mudah berikut untuk menyampaikan aspirasi Anda.</p>
+    </div>
+    <div class="prosedur-steps">
+      <div class="step">
+        <div class="step-icon">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <h4>Isi Formulir</h4>
+        <p>Lengkapi data diri dan rincian kejadian dengan benar.</p>
+      </div>
+      <div class="step-connector"></div>
+      <div class="step">
+        <div class="step-icon">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+        </div>
+        <h4>Unggah Bukti</h4>
+        <p>Lampirkan foto atau dokumen pendukung kejadian.</p>
+      </div>
+      <div class="step-connector"></div>
+      <div class="step">
+        <div class="step-icon">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <h4>Dapatkan Kode</h4>
+        <p>Terima nomor registrasi unik untuk pelacakan.</p>
+      </div>
+      <div class="step-connector"></div>
+      <div class="step">
+        <div class="step-icon">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <h4>Cek Status</h4>
+        <p>Pantau perkembangan laporan Anda secara berkala.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature Section -->
+  <section class="section-feature">
+    <div class="feature-img">
+      <div class="feature-img-overlay">
+        <h3>Transparansi Layanan</h3>
+        <p>Kami berkomitmen memberikan keterbukaan informasi dalam setiap proses penanganan laporan masyarakat Wanasari.</p>
+      </div>
+    </div>
+    <div class="feature-right">
+      <div class="feature-card blue-lt">
+        <div class="feature-number">24<span>/7</span></div>
+        <div class="feature-subtitle">Siaga Melayani Laporan</div>
+        <div class="feature-desc">Sistem kami siap menerima keluhan Anda kapan saja tanpa jeda.</div>
+      </div>
+      <div class="feature-card dark">
+        <div class="feature-shield">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>Keamanan Data</span>
+        </div>
+        <div class="feature-desc">Seluruh identitas pelapor dan bukti yang diunggah dilindungi dengan enkripsi tingkat tinggi untuk menjamin privasi.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-brand">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#fff" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      E-Pengaduan Wanasari
+    </div>
+    <div class="footer-links">
+      <a href="#" onclick="showPage('kontak')">Kontak Kami</a>
+      <a href="#">Syarat &amp; Ketentuan</a>
+      <a href="#">Kebijakan Privasi</a>
+    </div>
+    <div class="footer-disclaimer">WEB INI DIKEMBANGKAN UNTUK TUJUAN DEMONSTRASI TEKNOLOGI PELAYANAN PUBLIK DIGITAL PADA TINGKAT KEPOLISIAN SEKTOR..</div>
+  </footer>
+</div>
+
+<!-- ==================== PAGE: INFORMASI LAYANAN ==================== -->
+<div id="page-info" class="page">
+  <div class="page-hero">
+    <h1>Informasi Layanan</h1>
+    <p>Website ini merupakan pWebsite ini dipergunakan untuk sistem penyampaian pengaduan masyarakat secara digital di wilayah hukum Polsek Wanasari.</p>
+  </div>
+
+  <div class="alert-info">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+  </div>
+
+  <section class="section-kategori">
+    <div class="eyebrow">KATEGORI LAYANAN</div>
+    <h2 style="text-align:center;font-size:26px;font-weight:800;color:var(--gray-800);">Jenis Pengaduan yang Dapat Dilaporkan</h2>
+    <div class="kategori-grid">
+      <div class="kat-card">
+        <div class="kat-icon">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <h3>Kehilangan Barang</h3>
+        <p>Pelaporan dokumen atau barang pribadi yang hilang di tempat umum.</p>
+      </div>
+      <div class="kat-card">
+        <div class="kat-icon">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>Gangguan Keamanan</h3>
+        <p>Melaporkan tindakan yang mengganggu ketertiban dan ketenangan lingkungan.</p>
+      </div>
+      <div class="kat-card">
+        <div class="kat-icon">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        </div>
+        <h3>Lalu Lintas</h3>
+        <p>Informasi terkait kecelakaan jalan raya atau pelanggaran lalu lintas berat.</p>
+      </div>
+      <div class="kat-card">
+        <div class="kat-icon">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </div>
+        <h3>Penipuan</h3>
+        <p>Tindak penipuan baik secara langsung maupun melalui media digital.</p>
+      </div>
+      <div class="kat-card wide">
+        <div class="kat-icon">
+          <svg fill="none" stroke="#f55" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div>
+          <h3>Ancaman atau Kekerasan</h3>
+          <p>Tindakan intimidasi, pengancaman, atau kekerasan fisik yang memerlukan respons segera.</p>
+        </div>
+      </div>
+      <div class="kat-card wide">
+        <div class="kat-icon">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div>
+          <h3>Keributan Warga</h3>
+          <p>Perselisihan antar warga atau keramaian yang tidak kondusif di lingkungan sekitar.</p>
+        </div>
+      </div>
+      <div class="kat-card full" style="grid-column:span 4;">
+        <div class="kat-icon">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="15" x2="13" y2="15"/></svg>
+        </div>
+        <div class="kat-info">
+          <h3>Pengaduan Umum</h3>
+          <p style="font-size:13px;color:var(--gray-600);">Aduan lainnya yang tidak termasuk dalam kategori di atas.</p>
+        </div>
+        <button class="btn-pilih" onclick="showPage('buat')">Pilih Kategori</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Alur Pelaporan -->
+  <section class="section-alur">
+    <div class="eyebrow">ALUR PELAPORAN</div>
+    <h2 style="text-align:center;font-size:26px;font-weight:800;color:var(--gray-800);margin-top:6px;">Prosedur Pengaduan Digital</h2>
+    <div class="alur-steps">
+      <div class="alur-step">
+        <div class="alur-circle done">
+          <span class="alur-num">1</span>
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+        </div>
+        <h4>Isi Laporan</h4>
+        <p>Masyarakat mengisi formulir laporan secara lengkap.</p>
+      </div>
+      <div class="alur-conn done"></div>
+      <div class="alur-step">
+        <div class="alur-circle">
+          <span class="alur-num" style="background:var(--gray-400);">2</span>
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+        </div>
+        <h4>Simpan Data</h4>
+        <p>Sistem melakukan enkripsi dan menyimpan data pengaduan.</p>
+      </div>
+      <div class="alur-conn"></div>
+      <div class="alur-step">
+        <div class="alur-circle">
+          <span class="alur-num" style="background:var(--gray-400);">3</span>
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <h4>Kode Pengaduan</h4>
+        <p>Pelapor menerima ID unik untuk memantau status laporan.</p>
+      </div>
+      <div class="alur-conn"></div>
+      <div class="alur-step">
+        <div class="alur-circle">
+          <span class="alur-num" style="background:var(--gray-400);">4</span>
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h4>Verifikasi</h4>
+        <p>Tim admin Polsek meninjau kevalidan data laporan.</p>
+      </div>
+      <div class="alur-conn"></div>
+      <div class="alur-step">
+        <div class="alur-circle" style="background:var(--navy);border-color:var(--navy);">
+          <span class="alur-num">5</span>
+          <svg fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <h4>Update Status</h4>
+        <p>Status diperbarui dan pelapor mendapat notifikasi penyelesaian.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Banner -->
+  <div class="cta-banner">
+    <div class="cta-text">
+      <h2>Siap untuk melapor?</h2>
+      <p>Sampaikan pengaduan Anda dengan cepat, aman, dan transparan melalui platform digital kami.</p>
+    </div>
+    <div class="cta-btns">
+      <button class="btn-blue" onclick="showPage('buat')">Mulai Buat Pengaduan →</button>
+      <button class="btn-white-outline">Lihat Panduan PDF</button>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-brand">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#fff" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Polsek Wanasari
+    </div>
+    <div class="footer-links">
+      <a href="#">Kontak Kami</a>
+      <a href="#">Syarat &amp; Ketentuan</a>
+      <a href="#">Kebijakan Privasi</a>
+    </div>
+    <div class="footer-copy">© 2024 Polsek Wanasari. Website ini merupakan prototype akademik dan bukan layanan resmi kepolisian.</div>
+    <div class="footer-disclaimer">Dikembangkan untuk keperluan edukasi • Universitas Teknologi Indonesia • Fakultas Hukum &amp; Teknologi</div>
+  </footer>
+</div>
+
+<!-- ==================== PAGE: BUAT PENGADUAN ==================== -->
+<div id="page-buat" class="page">
+  <div class="page-hero">
+    <h1 style="font-size:40px;font-weight:900;">Buat Pengaduan</h1>
+    <p>Silakan isi formulir pengaduan dengan data yang jelas dan benar. Laporan Anda akan ditindaklanjuti secara profesional oleh petugas Polsek Wanasari.</p>
+  </div>
+
+  <section class="section-form">
+  <form id="form-pengaduan" class="form-card" enctype="multipart/form-data">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Nama Lengkap</label>
+        <input type="text" name="nama_lengkap" placeholder="Masukkan nama sesuai KTP" required />
+      </div>
+
+      <div class="form-group">
+        <label>Nomor HP</label>
+        <input type="tel" name="no_hp" placeholder="08xx-xxxx-xxxx" required />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Alamat Sesuai KTP</label>
+      <input type="text" name="alamat" placeholder="Masukkan alamat lengkap" required />
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Kategori Pengaduan</label>
+        <select name="kategori" id="kategori-pengaduan" required>
+          <option value="">Pilih Kategori</option>
+          <option>Kehilangan Barang</option>
+          <option>Gangguan Keamanan</option>
+          <option>Lalu Lintas</option>
+          <option>Penipuan</option>
+          <option>Ancaman atau Kekerasan</option>
+          <option>Keributan Warga</option>
+          <option>Pengaduan Umum</option>
+          <option>Lainnya</option>
+        </select>
+
+        <input
+          type="text"
+          name="kategori_lain"
+          id="kategori-lain"
+          placeholder="Tulis kategori lainnya"
+          style="display:none;margin-top:10px;"
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Lokasi Kejadian</label>
+        <input type="text" name="lokasi" placeholder="Nama tempat atau koordinat" required />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Tanggal Kejadian</label>
+        <input type="date" name="tanggal_kejadian" required />
+      </div>
+
+      <div class="form-group">
+        <label>Upload Bukti Foto/Video/Dokumen</label>
+
+        <input
+          type="file"
+          id="bukti-input"
+          name="bukti"
+          accept="image/*,video/*,.pdf"
+          hidden
+        />
+
+        <div class="upload-box" id="upload-box">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+          </svg>
+          <span id="upload-text">Pilih Berkas</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Kronologi Kejadian</label>
+      <textarea
+        name="kronologi"
+        placeholder="Ceritakan detail kejadian secara berurutan..."
+        required
+      ></textarea>
+    </div>
+
+    <hr class="form-divider"/>
+
+    <div class="form-check">
+      <input type="checkbox" id="agree" required />
+      <label for="agree">
+        Saya menyatakan bahwa data yang saya isi benar dan saya bersedia menanggung konsekuensi hukum jika terbukti memberikan keterangan palsu.
+      </label>
+    </div>
+
+    <button class="btn-submit" type="submit">
+      Kirim Pengaduan
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="18" height="18">
+        <line x1="5" y1="12" x2="19" y2="12"/>
+        <polyline points="12 5 19 12 12 19"/>
+      </svg>
+    </button>
+  </form>
+
+  <div class="form-sidebar">
+
+<div class="form-sidebar">
+
+    <div class="form-sidebar">
+      <div class="sidebar-card">
+        <h4>
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Petunjuk Laporan
+        </h4>
+        <div class="sidebar-steps">
+          <div class="sidebar-step"><div class="sidebar-step-num">1</div><p>Gunakan data KTP yang valid untuk memudahkan verifikasi petugas.</p></div>
+          <div class="sidebar-step"><div class="sidebar-step-num">2</div><p>Lampirkan foto bukti fisik jika ada (struk belanja, foto kerusakan, dsb).</p></div>
+          <div class="sidebar-step"><div class="sidebar-step-num">3</div><p>Pastikan nomor HP aktif untuk keperluan konfirmasi tindak lanjut.</p></div>
+        </div>
+      </div>
+      <div class="emergency-card">
+        <div class="emergency-title">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+          DARURAT?
+        </div>
+        <p class="emergency-desc">Jika kejadian mengancam nyawa atau sedang berlangsung, hubungi Call Center Polsek segera.</p>
+        <button class="btn-emergency">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.38 2 2 0 0 1 3.6 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.86a16 16 0 0 0 6 6l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.72 16.92z"/></svg>
+          Call 110
+        </button>
+      </div>
+      <div class="map-thumb">
+        <div class="map-placeholder">🗺️ Wilayah Hukum Polsek Wanasari</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-brand">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#fff" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      POLSEK WANASARI
+    </div>
+    <div class="footer-links">
+      <a href="#">Kontak Kami</a>
+      <a href="#">Syarat &amp; Ketentuan</a>
+      <a href="#">Kebijakan Privasi</a>
+    </div>
+    <div class="footer-copy">© 2024 Polsek Wanasari. Website ini merupakan prototype akademik dan bukan layanan resmi kepolisian. Seluruh data yang diinput pada platform ini hanya untuk keperluan simulasi.</div>
+  </footer>
+</div>
+
+<!-- ==================== PAGE: CEK STATUS ==================== -->
+<div id="page-cek" class="page">
+  <div class="cek-hero">
+    <h1>Cek Status Pengaduan</h1>
+    <p>Masukkan kode pengaduan untuk melihat perkembangan laporan Anda secara transparan dan cepat.</p>
+  </div>
+
+  <div class="cek-box-wrap">
+    <div class="cek-box">
+      <label>Kode Pengaduan</label>
+      <div class="cek-input-row">
+        <input type="text" placeholder="WNS-2026-00124" id="input-kode" value="WNS-2026-00124" />
+        <button class="btn-cari" onclick="document.getElementById('hasil-section').style.display='block'">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          Cari Status
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="hasil-wrap" id="hasil-section" style="display:block;">
+    <div class="hasil-card">
+      <div class="hasil-header">
+        <h3>Hasil Pencarian</h3>
+        <span class="badge-wait">● MENUNGGU VERIFIKASI</span>
+      </div>
+      <div class="hasil-body">
+        <div class="info-field"><div class="lbl">Kode Laporan</div><div class="val">WNS-2026-00124</div></div>
+        <div class="info-field"><div class="lbl">Kategori</div><div class="val" style="font-weight:500;">Gangguan Keamanan</div></div>
+        <div class="hasil-img" rowspan="2">
+          <div class="img-placeholder">🏛️<br/>STATUS LOKASI<br/><strong>Polsek Wanasari</strong></div>
+        </div>
+        <div class="info-field"><div class="lbl">Nama Pelapor</div><div class="val">Aditya Pratama</div></div>
+        <div class="info-field"><div class="lbl">Tanggal Masuk</div><div class="val" style="font-weight:500;">14 Maret 2024</div></div>
+        <div class="catatan-admin">
+          <div class="cat-lbl">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="14" height="14"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Catatan Admin
+          </div>
+          <p>"Laporan sedang dalam proses pengecekan awal oleh petugas."</p>
+        </div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-steps">
+          <div class="prog-step">
+            <div class="prog-circle done">✓</div>
+            <h5>Laporan Diterima</h5>
+            <div class="prog-sub">14 Mar, 09:00</div>
+          </div>
+          <div class="prog-conn done"></div>
+          <div class="prog-step">
+            <div class="prog-circle active">2</div>
+            <h5>Verifikasi</h5>
+            <div class="prog-sub">Sedang Berjalan</div>
+          </div>
+          <div class="prog-conn"></div>
+          <div class="prog-step">
+            <div class="prog-circle">3</div>
+            <h5>Penanganan</h5>
+            <div class="prog-sub">Menunggu</div>
+          </div>
+          <div class="prog-conn"></div>
+          <div class="prog-step">
+            <div class="prog-circle">4</div>
+            <h5>Selesai</h5>
+            <div class="prog-sub">--</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-brand">
+      <span>🇮🇩</span> POLSEK WANASARI
+    </div>
+    <div class="footer-links">
+      <a href="#">Kontak Kami</a>
+      <a href="#">Syarat &amp; Ketentuan</a>
+      <a href="#">Kebijakan Privasi</a>
+    </div>
+    <div class="footer-copy">© 2024 Polsek Wanasari. Website ini merupakan prototype akademik dan bukan layanan resmi kepolisian. Seluruh data yang ditampilkan bersifat simulasi untuk keperluan perancangan UI/UX.</div>
+  </footer>
+</div>
+
+<!-- ==================== PAGE: KONTAK ==================== -->
+<div id="page-kontak" class="page">
+  <div class="page-hero">
+    <h1 style="text-align:center;">Kontak dan Bantuan</h1>
+    <p style="text-align:center;margin:0 auto;">Kami siap melayani dan membantu setiap laporan masyarakat untuk menciptakan lingkungan yang aman dan tertib.</p>
+  </div>
+
+  <section class="section-kontak">
+    <div class="kontak-grid">
+      <div>
+        <div class="kontak-card">
+          <div class="kontak-brand">
+            <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" width="38" height="38">
+              <path d="M18 3L5 9v10c0 8.5 6.5 14.5 13 16.5 6.5-2 13-8 13-16.5V9L18 3z" fill="#1a237e"/>
+              <line x1="18" y1="13" x2="18" y2="23" stroke="#4dabf7" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="13" y1="18" x2="23" y2="18" stroke="#4dabf7" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+            <div>
+              <h3>Polsek Wanasari</h3>
+              <p>Polres Brebes, Jawa Tengah</p>
+            </div>
+          </div>
+          <div class="kontak-row">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <div><div class="klabel">Alamat</div><div class="kval">Kec. Wanasari, Kab. Brebes, Jawa Tengah</div></div>
+          </div>
+          <div class="kontak-row">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.38 2 2 0 0 1 3.6 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.86a16 16 0 0 0 6 6l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.72 16.92z"/></svg>
+            <div><div class="klabel">Telepon</div><div class="kval">(0283) 693-456</div></div>
+          </div>
+          <div class="kontak-row">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <div><div class="klabel">Email</div><div class="kval">wanasari.polsek@polri.go.id</div></div>
+          </div>
+          <div class="darurat-box">
+            <div class="darurat-title">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="14" height="14"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+              Darurat (Emergency)
+            </div>
+            <p class="darurat-desc">Untuk keadaan darurat, segera hubungi layanan resmi kepolisian terdekat atau call center 110.</p>
+          </div>
+          <div class="map-big">
+            <div class="map-placeholder">🗺️ Lokasi Polsek Wanasari, Brebes, Jawa Tengah<br/><small style="cursor:pointer;color:#4dabf7;">⊕ Buka di Peta</small></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-card">
+        <h3>
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Pertanyaan Umum (FAQ)
+        </h3>
+        <div class="faq-item">
+          <button class="faq-q open" onclick="toggleFaq(this)">
+            Bagaimana cara membuat pengaduan?
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-a open">Anda dapat membuat pengaduan dengan menekan tombol "Lapor!" di navigasi atas atau menu "Buat Pengaduan". Isi formulir dengan data yang valid dan lampirkan bukti pendukung jika ada.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            Bagaimana cara mengecek status pengaduan?
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-a">Buka menu "Cek Status" lalu masukkan kode pengaduan yang Anda terima setelah mengirim laporan. Status akan tampil secara real-time.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            Apa saja bukti yang dapat diunggah?
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-a">Anda dapat mengunggah foto (JPG, PNG, HEIC), video (MP4, MOV), maupun dokumen (PDF) sebagai bukti pendukung laporan. Ukuran maksimum per file adalah 10 MB.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            Apakah website ini layanan resmi?
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-a">Tidak. Website ini merupakan prototype akademik yang dikembangkan untuk keperluan studi. Data yang dimasukkan tidak diteruskan ke database resmi kepolisian.</div>
+        </div>
+        <div class="faq-contact">
+          <p>Masih memiliki pertanyaan lain?</p>
+          <small>Tim dukungan kami siap membantu Anda 24/7 melalui jalur komunikasi resmi.</small><br/>
+          <button class="btn-chat">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Chat dengan Petugas
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-brand">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#fff" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      E-Pengaduan Polsek Wanasari
+    </div>
+    <div class="footer-links">
+      <a href="#">Kontak Kami</a>
+      <a href="#">Syarat &amp; Ketentuan</a>
+      <a href="#">Kebijakan Privasi</a>
+    </div>
+    <div class="footer-copy">© 2024 Polsek Wanasari. Website ini merupakan prototype akademik dan bukan layanan resmi kepolisian.</div>
+    <div class="footer-disclaimer">Sistem ini hanya digunakan untuk kepentingan demonstrasi pengembangan antarmuka pengguna.</div>
+  </footer>
+</div>
+
+<!-- ==================== PAGE: SUKSES ==================== -->
+<div id="page-sukses" class="page">
+  <nav style="display:block;"></nav>
+  <div class="success-page">
+    <div class="success-icon">
+      <div class="success-dot1"></div>
+      <div class="success-dot2"></div>
+      <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h2>Pengaduan Berhasil Dikirim</h2>
+    <p>Pengaduan Anda telah berhasil dikirim. Simpan kode pengaduan berikut untuk mengecek status laporan secara berkala melalui sistem kami.</p>
+    <div class="kode-box">
+      <div class="klabel">KODE PENGADUAN</div>
+      <div class="kode-val">
+        WNS-2026-00124
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" title="Salin kode"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      </div>
+      <div class="kode-dots">
+        <div class="kode-dot"></div>
+        <div class="kode-dot gray"></div>
+        <div class="kode-dot gray"></div>
+      </div>
+    </div>
+    <div class="success-btns">
+      <button class="btn-dark" onclick="showPage('cek')">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        Cek Status Pengaduan
+      </button>
+      <button class="btn-light" onclick="showPage('beranda')">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Kembali ke Beranda
+      </button>
+    </div>
+    <div class="success-help">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Butuh bantuan? Hubungi layanan pengaduan kami di (021) 1234-5678
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-brand">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#fff" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      E-Pengaduan Wanasari
+    </div>
+    <div class="footer-links">
+      <a href="#">Kontak Kami</a>
+      <a href="#">Syarat &amp; Ketentuan</a>
+      <a href="#">Kebijakan Privasi</a>
+    </div>
+    <div class="footer-copy">© 2024 Polsek Wanasari. Website ini merupakan prototype akademik dan bukan layanan resmi kepolisian. Seluruh data yang dimasukkan dalam sistem ini tidak akan diproses oleh pihak berwenang.</div>
+  </footer>
+</div>
+
+<script src="main.js"></script>
+</body>
+</html>

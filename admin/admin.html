@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin E-Pengaduan Wanasari</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 14px; color: #1a1a2e; background: #f0f2f5; }
+
+    :root {
+      --navy:      #0d1457;
+      --navy-mid:  #1a237e;
+      --blue:      #3b5bdb;
+      --blue-lt:   #4dabf7;
+      --gold:      #f59f00;
+      --red:       #e03131;
+      --green:     #2f9e44;
+      --gray-100:  #f8f9fc;
+      --gray-200:  #e9ecef;
+      --gray-300:  #dee2e6;
+      --gray-500:  #adb5bd;
+      --gray-600:  #6c757d;
+      --gray-800:  #343a40;
+      --white:     #ffffff;
+      --shadow:    0 2px 12px rgba(0,0,0,.08);
+      --radius:    10px;
+      --sidebar-w: 240px;
+    }
+
+    /* ===== LAYOUT ===== */
+    .admin-shell { display: flex; min-height: 100vh; }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: #0d1117;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      left: 0; top: 0; bottom: 0;
+      z-index: 200;
+    }
+    .sidebar-brand {
+      padding: 22px 20px 16px;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .sidebar-brand-icon {
+      width: 36px; height: 36px; background: var(--navy-mid); border-radius: 8px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .sidebar-brand-icon svg { width: 20px; height: 20px; }
+    .sidebar-brand h1 { font-size: 14px; font-weight: 700; line-height: 1.2; }
+    .sidebar-brand p { font-size: 11px; color: rgba(255,255,255,.45); }
+    .sidebar-nav { flex: 1; padding: 16px 12px; display: flex; flex-direction: column; gap: 4px; }
+    .nav-item {
+      display: flex; align-items: center; gap: 11px;
+      padding: 10px 12px; border-radius: 8px; cursor: pointer;
+      color: rgba(255,255,255,.6); font-size: 13px; font-weight: 500;
+      transition: all .15s; text-decoration: none;
+      border: none; background: transparent; width: 100%; text-align: left;
+    }
+    .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
+    .nav-item:hover { background: rgba(255,255,255,.06); color: #fff; }
+    .nav-item.active { background: var(--navy-mid); color: #fff; }
+    .sidebar-footer { padding: 16px 12px; border-top: 1px solid rgba(255,255,255,.07); }
+    .logout-btn {
+      display: flex; align-items: center; gap: 11px;
+      padding: 10px 12px; border-radius: 8px; cursor: pointer;
+      color: rgba(255,255,255,.5); font-size: 13px; font-weight: 500;
+      transition: all .15s; border: none; background: transparent; width: 100%;
+    }
+    .logout-btn svg { width: 18px; height: 18px; }
+    .logout-btn:hover { color: var(--red); background: rgba(224,49,49,.08); }
+
+    /* ===== MAIN AREA ===== */
+    .main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; }
+
+    /* ===== TOPBAR ===== */
+    .topbar {
+      background: #fff;
+      border-bottom: 1px solid var(--gray-200);
+      padding: 0 32px;
+      height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .topbar h2 { font-size: 20px; font-weight: 700; }
+    .topbar-right { display: flex; align-items: center; gap: 14px; }
+    .admin-info { text-align: right; }
+    .admin-info .name { font-size: 13px; font-weight: 700; }
+    .admin-info .role { font-size: 11px; color: var(--gray-600); }
+    .avatar { width: 38px; height: 38px; border-radius: 50%; overflow: hidden; background: var(--navy-mid); display: flex; align-items: center; justify-content: center; }
+    .avatar svg { width: 22px; height: 22px; color: #fff; }
+    .topbar-back { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: var(--navy); cursor: pointer; border: none; background: none; }
+    .topbar-back svg { width: 18px; height: 18px; }
+
+    /* ===== PAGES ===== */
+    .admin-page { display: none; padding: 28px 32px; }
+    .admin-page.active { display: block; }
+
+    /* ===== STAT CARDS ===== */
+    .stat-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 24px; }
+    .stat-card {
+      background: #fff; border-radius: var(--radius); padding: 20px 18px;
+      box-shadow: var(--shadow); position: relative;
+    }
+    .stat-badge { font-size: 11px; font-weight: 700; color: #2f9e44; display: flex; align-items: center; gap: 3px; margin-bottom: 6px; }
+    .stat-label { font-size: 12px; color: var(--gray-600); margin-bottom: 6px; }
+    .stat-value { font-size: 26px; font-weight: 900; }
+    .stat-value.orange { color: #e67700; }
+    .stat-value.blue { color: var(--blue); }
+    .stat-value.green { color: var(--green); }
+    .stat-value.red { color: var(--red); }
+    .stat-icon {
+      position: absolute; top: 18px; right: 18px;
+      width: 36px; height: 36px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .stat-icon.orange { background: #fff3bf; }
+    .stat-icon.blue { background: #dbe4ff; }
+    .stat-icon.green { background: #d3f9d8; }
+    .stat-icon.red { background: #ffe3e3; }
+    .stat-icon.default { background: #e7f5ff; }
+    .stat-icon svg { width: 18px; height: 18px; }
+
+    /* ===== CHART + TOP KATEGORI ===== */
+    .analytics-row { display: grid; grid-template-columns: 1fr 280px; gap: 20px; margin-bottom: 24px; }
+    .card { background: #fff; border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow); }
+    .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .card-header h3 { font-size: 15px; font-weight: 700; }
+    .card-header p { font-size: 12px; color: var(--gray-600); margin-top: 2px; }
+    .select-sm { border: 1px solid var(--gray-300); border-radius: 6px; padding: 6px 12px; font-size: 12px; background: #fff; cursor: pointer; }
+    /* Bar chart */
+    .bar-chart { display: flex; align-items: flex-end; gap: 10px; height: 160px; padding-top: 8px; }
+    .bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; }
+    .bar { width: 100%; border-radius: 4px 4px 0 0; background: var(--gray-200); transition: background .2s; }
+    .bar.active { background: var(--navy-mid); }
+    .bar-label { font-size: 11px; color: var(--gray-500); }
+    /* Top kategori */
+    .top-kat-item { margin-bottom: 14px; }
+    .top-kat-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; font-size: 13px; font-weight: 500; }
+    .top-kat-count { font-weight: 700; }
+    .top-kat-bar { height: 6px; background: var(--gray-200); border-radius: 4px; overflow: hidden; }
+    .top-kat-fill { height: 100%; background: var(--navy-mid); border-radius: 4px; }
+
+    /* ===== TABLE ===== */
+    .table-section { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); }
+    .table-header { padding: 18px 22px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--gray-200); }
+    .table-header h3 { font-size: 15px; font-weight: 700; }
+    .link-lihat { font-size: 13px; color: var(--blue); font-weight: 600; cursor: pointer; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { padding: 12px 16px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--gray-600); background: var(--gray-100); text-align: left; }
+    tbody tr { border-bottom: 1px solid var(--gray-200); }
+    tbody tr:last-child { border-bottom: none; }
+    tbody td { padding: 14px 16px; font-size: 13px; vertical-align: middle; }
+    tbody tr:hover { background: #f9faff; }
+    .kode-col { font-weight: 700; color: var(--navy); font-size: 13px; }
+    .pelapor-name { font-weight: 600; }
+    .pelapor-phone { font-size: 11px; color: var(--gray-600); margin-top: 2px; }
+    .badge { border-radius: 20px; padding: 4px 12px; font-size: 11px; font-weight: 700; white-space: nowrap; display: inline-block; }
+    .badge-wait { background: #fff3cd; color: #856404; }
+    .badge-proses { background: #cfe2ff; color: #0a58ca; }
+    .badge-selesai { background: #d1e7dd; color: #0f5132; }
+    .badge-tolak { background: #f8d7da; color: #842029; }
+    .badge-aktif { background: #d3f9d8; color: #2f9e44; }
+    .badge-nonaktif { background: #fff3cd; color: #856404; }
+    .action-icons { display: flex; align-items: center; gap: 10px; }
+    .action-icons button { border: none; background: none; cursor: pointer; color: var(--blue); padding: 4px; }
+    .action-icons button.red { color: var(--red); }
+    .action-icons button.gray { color: var(--gray-600); }
+    .action-icons button svg { width: 18px; height: 18px; display: block; }
+
+    /* ===== SEARCH / FILTER BAR ===== */
+    .filter-bar { padding: 18px 22px; border-bottom: 1px solid var(--gray-200); }
+    .filter-row { display: flex; gap: 12px; align-items: flex-end; }
+    .filter-group { flex: 1; }
+    .filter-group label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--gray-600); margin-bottom: 6px; display: block; }
+    .filter-input {
+      border: 1px solid var(--gray-300); border-radius: 8px; padding: 9px 14px 9px 36px;
+      font-size: 13px; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23adb5bd' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat 10px center;
+      width: 100%; outline: none; transition: border-color .2s;
+    }
+    .filter-input:focus { border-color: var(--blue); }
+    .filter-select { border: 1px solid var(--gray-300); border-radius: 8px; padding: 9px 14px; font-size: 13px; background: #fff; width: 100%; outline: none; cursor: pointer; }
+    .filter-btn { background: #0d1117; color: #fff; border: none; border-radius: 8px; padding: 9px 18px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 7px; flex-shrink: 0; }
+    .filter-btn svg { width: 16px; height: 16px; }
+
+    /* ===== PAGINATION ===== */
+    .pagination-row { padding: 14px 22px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--gray-200); }
+    .pagination-row span { font-size: 12px; color: var(--gray-600); }
+    .pagination-btns { display: flex; gap: 4px; }
+    .pg-btn { border: 1px solid var(--gray-300); background: #fff; border-radius: 6px; padding: 5px 12px; font-size: 12px; cursor: pointer; font-weight: 600; }
+    .pg-btn.active { background: var(--navy-mid); color: #fff; border-color: var(--navy-mid); }
+    .pg-btn:hover:not(.active) { background: var(--gray-100); }
+
+    /* ===== DETAIL PAGE ===== */
+    .detail-grid { display: grid; grid-template-columns: 1fr 280px; gap: 22px; }
+    .detail-header {
+      background: #fff; border-radius: var(--radius); padding: 18px 22px;
+      display: flex; align-items: center; justify-content: space-between;
+      box-shadow: var(--shadow); margin-bottom: 22px;
+    }
+    .detail-header .kode-big { font-size: 20px; font-weight: 800; color: var(--navy); }
+    .detail-header .sub { font-size: 12px; color: var(--gray-600); text-transform: uppercase; letter-spacing: .5px; font-weight: 700; margin-bottom: 4px; }
+    .detail-header-right { display: flex; align-items: center; gap: 14px; }
+    .detail-header .time-lbl { font-size: 12px; color: var(--gray-600); }
+    .section-block { background: #fff; border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow); margin-bottom: 20px; }
+    .section-block h4 { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; color: var(--navy); margin-bottom: 18px; }
+    .section-block h4 svg { width: 18px; height: 18px; }
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 24px; }
+    .info-item .lbl { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--gray-600); font-weight: 700; margin-bottom: 4px; }
+    .info-item .val { font-size: 14px; }
+    .info-item.full { grid-column: span 2; }
+    .kronologi-text { border-left: 3px solid var(--blue); padding: 14px 16px; background: var(--gray-100); border-radius: 0 8px 8px 0; font-size: 13px; line-height: 1.7; font-style: italic; color: var(--gray-800); }
+    .bukti-grid { display: flex; gap: 12px; flex-wrap: wrap; }
+    .bukti-item { width: 100px; height: 80px; border-radius: 8px; overflow: hidden; cursor: pointer; border: 1px solid var(--gray-200); display: flex; align-items: center; justify-content: center; font-size: 11px; text-align: center; color: var(--gray-600); background: var(--gray-100); }
+    .bukti-item.img { background: linear-gradient(145deg, #1a1a2e, #2c3e50); color: rgba(255,255,255,.5); }
+    .bukti-item.doc { border: 2px dashed var(--gray-300); }
+    /* Tindak Lanjut sidebar */
+    .tl-card { background: #fff; border: 2px solid var(--blue); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); margin-bottom: 16px; }
+    .tl-card h4 { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+    .tl-card h4 svg { width: 18px; height: 18px; color: var(--blue); }
+    .tl-label { font-size: 12px; font-weight: 700; color: var(--gray-800); margin-bottom: 7px; display: block; }
+    .tl-select, .tl-textarea {
+      width: 100%; border: 1px solid var(--gray-300); border-radius: 8px;
+      padding: 10px 12px; font-size: 13px; background: #fff; outline: none;
+      font-family: inherit; transition: border-color .2s; margin-bottom: 14px;
+    }
+    .tl-select:focus, .tl-textarea:focus { border-color: var(--blue); }
+    .tl-textarea { min-height: 100px; resize: vertical; }
+    .btn-simpan {
+      background: #0d1117; color: #fff; border: none; border-radius: 8px;
+      padding: 12px 16px; font-size: 13px; font-weight: 700; cursor: pointer; width: 100%;
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+    }
+    .btn-simpan:hover { background: var(--blue); }
+    .tl-note { font-size: 11px; color: var(--gray-500); margin-top: 8px; text-align: center; }
+    .riwayat-card { background: #fff; border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow); }
+    .riwayat-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 14px; }
+    .riwayat-item { display: flex; gap: 10px; margin-bottom: 12px; align-items: flex-start; }
+    .riwayat-dot { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .riwayat-dot.blue { background: #dbe4ff; }
+    .riwayat-dot.teal { background: #c3fae8; }
+    .riwayat-dot svg { width: 14px; height: 14px; color: var(--navy); }
+    .riwayat-text .r-title { font-size: 12px; font-weight: 700; }
+    .riwayat-text .r-sub { font-size: 11px; color: var(--gray-600); margin-top: 2px; }
+
+    /* ===== KATEGORI PAGE ===== */
+    .kat-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-bottom: 24px; }
+    .kat-stat-card { background: #fff; border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); display: flex; justify-content: space-between; align-items: flex-start; }
+    .kat-stat-card .ks-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--gray-600); margin-bottom: 6px; }
+    .kat-stat-card .ks-value { font-size: 26px; font-weight: 900; }
+    .ks-icon { width: 40px; height: 40px; border-radius: 10px; background: #eef2ff; display: flex; align-items: center; justify-content: center; }
+    .ks-icon svg { width: 20px; height: 20px; color: var(--blue); }
+    .ks-icon.green { background: #d3f9d8; }
+    .ks-icon.green svg { color: var(--green); }
+    .ks-icon.purple { background: #f3d9fa; }
+    .ks-icon.purple svg { color: #9c36b5; }
+    .btn-tambah { background: #0d1117; color: #fff; border: none; border-radius: 8px; padding: 10px 20px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 7px; }
+    .btn-tambah:hover { background: var(--blue); }
+    .kat-search-row { padding: 16px 22px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--gray-200); }
+    .search-box { border: 1px solid var(--gray-300); border-radius: 8px; padding: 9px 14px 9px 36px; font-size: 13px; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23adb5bd' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat 10px center; width: 280px; outline: none; }
+    .btn-filter { border: 1px solid var(--gray-300); background: #fff; border-radius: 8px; padding: 9px 16px; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+    .btn-filter svg { width: 15px; height: 15px; }
+
+    /* ===== PROFIL PAGE ===== */
+    .profil-grid { display: grid; grid-template-columns: 300px 1fr; gap: 24px; }
+    .profil-card { background: #fff; border-radius: var(--radius); padding: 28px 22px; box-shadow: var(--shadow); text-align: center; }
+    .avatar-big { width: 90px; height: 90px; border-radius: 50%; overflow: hidden; background: var(--navy-mid); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; position: relative; }
+    .avatar-big svg { width: 50px; height: 50px; color: rgba(255,255,255,.8); }
+    .avatar-cam {
+      position: absolute; bottom: 4px; right: 4px;
+      width: 24px; height: 24px; background: #fff; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 1px 4px rgba(0,0,0,.2);
+    }
+    .avatar-cam svg { width: 13px; height: 13px; color: var(--gray-600); }
+    .profil-name { font-size: 18px; font-weight: 800; margin-bottom: 2px; }
+    .profil-handle { font-size: 13px; color: var(--gray-600); margin-bottom: 10px; }
+    .role-badge { display: inline-flex; align-items: center; gap: 5px; background: #eef2ff; color: var(--blue); border-radius: 20px; padding: 5px 14px; font-size: 12px; font-weight: 700; }
+    .profil-meta { margin-top: 16px; border-top: 1px solid var(--gray-200); padding-top: 16px; text-align: left; }
+    .meta-row { display: flex; justify-content: space-between; font-size: 13px; padding: 5px 0; }
+    .meta-row .mk { color: var(--gray-600); }
+    .meta-row .mv { font-weight: 600; }
+    .meta-row .mv.green { color: var(--green); }
+    .security-card { background: #0d1117; color: #fff; border-radius: 10px; padding: 16px 18px; margin-top: 16px; text-align: left; }
+    .security-card h5 { font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+    .security-card h5 svg { width: 16px; height: 16px; color: var(--blue-lt); }
+    .security-card p { font-size: 12px; color: rgba(255,255,255,.55); line-height: 1.6; }
+    .settings-card { background: #fff; border-radius: var(--radius); padding: 28px; box-shadow: var(--shadow); }
+    .settings-card h3 { font-size: 17px; font-weight: 800; display: flex; align-items: center; gap: 8px; margin-bottom: 22px; }
+    .settings-card h3 svg { width: 20px; height: 20px; }
+    .settings-section { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--gray-600); margin: 0 0 14px; padding-bottom: 8px; border-bottom: 1px solid var(--gray-200); }
+    .settings-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+    .s-group label { display: block; font-size: 12px; font-weight: 700; color: var(--gray-800); margin-bottom: 6px; }
+    .s-group input { width: 100%; border: 1px solid var(--gray-300); border-radius: 8px; padding: 10px 14px; font-size: 13px; outline: none; transition: border-color .2s; }
+    .s-group input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,91,219,.1); }
+    .s-group.full { grid-column: span 2; }
+    .s-group.full input { width: 100%; }
+    .btn-simpan-profil { background: #0d1117; color: #fff; border: none; border-radius: 8px; padding: 12px 28px; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 7px; float: right; }
+    .btn-simpan-profil:hover { background: var(--blue); }
+
+    /* ===== LOGIN PAGE ===== */
+    #login-shell {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 100vh;
+      background: linear-gradient(145deg, #0d1457 0%, #1a237e 50%, #283593 100%);
+    }
+    .login-card { background: var(--gray-100); border-radius: 16px; padding: 40px 36px; width: 380px; box-shadow: 0 24px 64px rgba(0,0,0,.35); text-align: center; }
+    .login-logo { width: 56px; height: 56px; background: linear-gradient(135deg, #1a237e, #3b5bdb); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; box-shadow: 0 4px 14px rgba(59,91,219,.4); }
+    .login-logo svg { width: 30px; height: 30px; }
+    .login-card h2 { font-size: 18px; font-weight: 800; color: var(--gray-800); margin-bottom: 4px; }
+    .login-card p { font-size: 13px; color: var(--gray-600); margin-bottom: 26px; }
+    .login-group { text-align: left; margin-bottom: 16px; }
+    .login-group label { font-size: 12px; font-weight: 700; color: var(--gray-800); display: block; margin-bottom: 6px; }
+    .login-input {
+      width: 100%; border: 1px solid var(--gray-300); border-radius: 8px;
+      padding: 11px 14px 11px 38px; font-size: 13px; background: #fff; outline: none;
+      transition: border-color .2s;
+    }
+    .login-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,91,219,.1); }
+    .login-input-wrap { position: relative; }
+    .login-input-wrap svg.icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--gray-500); }
+    .login-input-wrap .eye-btn { position: absolute; right: 11px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--gray-500); display: flex; }
+    .login-input-wrap .eye-btn svg { width: 16px; height: 16px; }
+    .login-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .login-row label { display: flex; align-items: center; gap: 7px; font-size: 13px; cursor: pointer; }
+    .login-row a { font-size: 13px; color: var(--blue); font-weight: 600; text-decoration: none; }
+    .login-row a:hover { text-decoration: underline; }
+    .btn-login { width: 100%; background: #0d1117; color: #fff; border: none; border-radius: 8px; padding: 14px; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background .2s; }
+    .btn-login:hover { background: var(--blue); }
+    .btn-login svg { width: 18px; height: 18px; }
+    .login-footer { margin-top: 22px; font-size: 12px; color: var(--gray-500); }
+    .login-disclaimer { font-size: 11px; color: var(--gray-500); text-transform: uppercase; letter-spacing: .5px; }
+
+    /* ===== FOOTER (admin) ===== */
+    .admin-footer { padding: 14px 32px; background: #fff; border-top: 1px solid var(--gray-200); display: flex; justify-content: space-between; align-items: center; }
+    .admin-footer .left { font-size: 12px; color: var(--gray-600); }
+    .admin-footer .right { font-size: 11px; color: var(--gray-500); text-transform: uppercase; letter-spacing: .5px; text-align: right; }
+
+    /* ===== MODAL ===== */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 500; align-items: center; justify-content: center; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: #fff; border-radius: 14px; padding: 28px 28px 22px; width: 400px; box-shadow: 0 24px 64px rgba(0,0,0,.25); }
+    .modal h3 { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+    .modal p { font-size: 13px; color: var(--gray-600); margin-bottom: 20px; }
+    .modal-btns { display: flex; gap: 12px; justify-content: flex-end; }
+    .btn-cancel { background: var(--gray-100); color: var(--gray-800); border: 1px solid var(--gray-300); border-radius: 8px; padding: 10px 20px; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .btn-confirm { background: var(--red); color: #fff; border: none; border-radius: 8px; padding: 10px 20px; font-size: 13px; font-weight: 700; cursor: pointer; }
+
+    /* Tooltip for page toggling */
+    [data-page] { cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<!-- ===== LOGIN PAGE ===== -->
+<div id="login-shell">
+  <div class="login-card">
+    <div class="login-logo">
+      <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18 3L5 9v10c0 8.5 6.5 14.5 13 16.5 6.5-2 13-8 13-16.5V9L18 3z" fill="white" opacity=".9"/>
+        <line x1="18" y1="12" x2="18" y2="24" stroke="#4dabf7" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="12" y1="18" x2="24" y2="18" stroke="#4dabf7" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <h2>Admin E-Pengaduan Wanasari</h2>
+    <p>Masuk untuk mengelola data pengaduan masyarakat.</p>
+
+    <div class="login-group">
+      <label>Username</label>
+      <div class="login-input-wrap">
+        <svg class="icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <input type="text" class="login-input" placeholder="Masukkan username admin" value="admin_wanasari" />
+      </div>
+    </div>
+    <div class="login-group">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+        <label style="margin:0;">Password</label>
+        <a href="#" style="font-size:12px;color:var(--blue);">Lupa password?</a>
+      </div>
+      <div class="login-input-wrap">
+        <svg class="icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <input type="password" class="login-input" id="pw-input" value="admin123" />
+        <button class="eye-btn" onclick="togglePw()">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="login-row">
+      <label><input type="checkbox" checked /> Ingat saya untuk 30 hari</label>
+    </div>
+    <button class="btn-login" onclick="doLogin()">
+      Masuk
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+    </button>
+    <div class="login-footer"><div class="login-disclaimer">Akses hanya untuk admin.</div></div>
+  </div>
+</div>
+
+<!-- ===== ADMIN SHELL ===== -->
+<div id="admin-shell" style="display:none;">
+  <div class="admin-shell">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#4dabf7" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div>
+          <h1>E-Pengaduan</h1>
+          <p>Polsek Wanasari</p>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="nav-item active" id="nav-dashboard" onclick="showAdminPage('dashboard')">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </button>
+        <button class="nav-item" id="nav-data" onclick="showAdminPage('data')">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Data Pengaduan
+        </button>
+        <button class="nav-item" id="nav-kategori" onclick="showAdminPage('kategori')">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          Kategori Pengaduan
+        </button>
+        <button class="nav-item" id="nav-profil" onclick="showAdminPage('profil')">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Profil Admin
+        </button>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="logout-btn" onclick="doLogout()">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Keluar
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+
+      <!-- ===== DASHBOARD ===== -->
+      <div id="page-dashboard" class="admin-page active">
+        <div class="topbar">
+          <div><h2>Dashboard</h2></div>
+          <div class="topbar-right">
+            <div class="admin-info">
+              <div class="name">Admin Polsek Wanasari</div>
+              <div class="role">ID: 882910</div>
+            </div>
+            <div class="avatar">
+              <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding:28px 32px;">
+          <!-- Stat Cards -->
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="stat-badge">▲ +12% Bulan Ini</div>
+              <div class="stat-label">Total Pengaduan</div>
+              <div class="stat-value">1,248</div>
+              <div class="stat-icon default">
+                <svg fill="none" stroke="#3b5bdb" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Menunggu Verifikasi</div>
+              <div class="stat-value orange">42</div>
+              <div class="stat-icon orange">
+                <svg fill="none" stroke="#e67700" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Diproses</div>
+              <div class="stat-value blue">156</div>
+              <div class="stat-icon blue">
+                <svg fill="none" stroke="#3b5bdb" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Selesai</div>
+              <div class="stat-value green">980</div>
+              <div class="stat-icon green">
+                <svg fill="none" stroke="#2f9e44" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Ditolak</div>
+              <div class="stat-value red">70</div>
+              <div class="stat-icon red">
+                <svg fill="none" stroke="#e03131" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts -->
+          <div class="analytics-row">
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <h3>Grafik Status Pengaduan</h3>
+                  <p>Aktivitas pelaporan 7 hari terakhir</p>
+                </div>
+                <select class="select-sm"><option>7 Hari Terakhir</option><option>30 Hari</option><option>3 Bulan</option></select>
+              </div>
+              <div class="bar-chart">
+                <div class="bar-wrap"><div class="bar" style="height:40%;"></div><div class="bar-label">Sen</div></div>
+                <div class="bar-wrap"><div class="bar" style="height:55%;"></div><div class="bar-label">Sel</div></div>
+                <div class="bar-wrap"><div class="bar" style="height:48%;"></div><div class="bar-label">Rab</div></div>
+                <div class="bar-wrap"><div class="bar active" style="height:90%;"></div><div class="bar-label">Kam</div></div>
+                <div class="bar-wrap"><div class="bar" style="height:65%;"></div><div class="bar-label">Jum</div></div>
+                <div class="bar-wrap"><div class="bar" style="height:72%;"></div><div class="bar-label">Sab</div></div>
+                <div class="bar-wrap"><div class="bar" style="height:38%;"></div><div class="bar-label">Min</div></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header"><h3>Top Kategori</h3></div>
+              <div class="top-kat-item"><div class="top-kat-row"><span>Lalu Lintas</span><span class="top-kat-count">420</span></div><div class="top-kat-bar"><div class="top-kat-fill" style="width:100%;"></div></div></div>
+              <div class="top-kat-item"><div class="top-kat-row"><span>Kriminalitas</span><span class="top-kat-count">312</span></div><div class="top-kat-bar"><div class="top-kat-fill" style="width:74%;"></div></div></div>
+              <div class="top-kat-item"><div class="top-kat-row"><span>Gangguan Publik</span><span class="top-kat-count">215</span></div><div class="top-kat-bar"><div class="top-kat-fill" style="width:51%;"></div></div></div>
+              <div class="top-kat-item"><div class="top-kat-row"><span>Lainnya</span><span class="top-kat-count">301</span></div><div class="top-kat-bar"><div class="top-kat-fill" style="width:71%;"></div></div></div>
+            </div>
+          </div>
+
+          <!-- Recent Table -->
+          <div class="table-section">
+            <div class="table-header">
+              <h3>Pengaduan Terbaru</h3>
+              <span class="link-lihat" onclick="showAdminPage('data')">Lihat Semua</span>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>KODE</th><th>NAMA PELAPOR</th><th>KATEGORI</th><th>TANGGAL MASUK</th><th>STATUS</th><th>AKSI</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="kode-col">#P-24010</td>
+                  <td>Budi Santoso</td>
+                  <td>Lalu Lintas</td>
+                  <td>12 Okt 2023</td>
+                  <td><span class="badge badge-wait">Menunggu Verifikasi</span></td>
+                  <td><div class="action-icons"><button onclick="showAdminPage('detail')"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td>
+                </tr>
+                <tr>
+                  <td class="kode-col">#P-24009</td>
+                  <td>Siti Aminah</td>
+                  <td>Kriminalitas</td>
+                  <td>11 Okt 2023</td>
+                  <td><span class="badge badge-proses">Diproses</span></td>
+                  <td><div class="action-icons"><button onclick="showAdminPage('detail')"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td>
+                </tr>
+                <tr>
+                  <td class="kode-col">#P-24008</td>
+                  <td>Andi Wijaya</td>
+                  <td>Gangguan Publik</td>
+                  <td>10 Okt 2023</td>
+                  <td><span class="badge badge-selesai">Selesai</span></td>
+                  <td><div class="action-icons"><button onclick="showAdminPage('detail')"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td>
+                </tr>
+                <tr>
+                  <td class="kode-col">#P-24007</td>
+                  <td>Rina Marlina</td>
+                  <td>Lainnya</td>
+                  <td>09 Okt 2023</td>
+                  <td><span class="badge badge-tolak">Ditolak</span></td>
+                  <td><div class="action-icons"><button onclick="showAdminPage('detail')"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="admin-footer">
+          <div class="left">© 2023 Polsek Wanasari. E-Pengaduan Portal. Seluruh hak cipta dilindungi.</div>
+          <div class="right">Legal Disclaimer: Dashboard ini hanya untuk penggunaan internal personil Kepolisian Sektor Wanasari.</div>
+        </div>
+      </div>
+
+      <!-- ===== DATA PENGADUAN ===== -->
+      <div id="page-data" class="admin-page">
+        <div class="topbar">
+          <div><h2>Data Pengaduan</h2></div>
+          <div class="topbar-right">
+            <div class="admin-info"><div class="name">Admin Polsek Wanasari</div><div class="role">Super Admin</div></div>
+            <div class="avatar"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          </div>
+        </div>
+
+        <div style="padding:28px 32px;">
+          <div class="table-section">
+            <div class="filter-bar">
+              <div class="filter-row">
+                <div class="filter-group" style="flex:2;">
+                  <label>Pencarian</label>
+                  <input type="text" class="filter-input" placeholder="Cari berdasarkan kode atau nama pelapor" />
+                </div>
+                <div class="filter-group">
+                  <label>Kategori</label>
+                  <select class="filter-select">
+                    <option>Semua Kategori</option>
+                    <option>Kehilangan Barang</option>
+                    <option>Gangguan Keamanan</option>
+                    <option>Lalu Lintas</option>
+                    <option>Pencurian</option>
+                  </select>
+                </div>
+                <div class="filter-group">
+                  <label>Status</label>
+                  <select class="filter-select">
+                    <option>Semua Status</option>
+                    <option>Menunggu Verifikasi</option>
+                    <option>Diproses</option>
+                    <option>Selesai</option>
+                    <option>Ditolak</option>
+                  </select>
+                </div>
+                <button class="filter-btn">
+                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="21" y1="4" x2="14" y2="4"/><line x1="10" y1="4" x2="3" y2="4"/><line x1="21" y1="12" x2="12" y2="12"/><line x1="8" y1="12" x2="3" y2="12"/><line x1="21" y1="20" x2="16" y2="20"/><line x1="12" y1="20" x2="3" y2="20"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>KODE</th><th>PELAPOR</th><th>KATEGORI</th><th>LOKASI</th><th>TANGGAL MASUK</th><th>STATUS</th><th>AKSI</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="kode-col">#PG-0042</td>
+                  <td><div class="pelapor-name">Ahmad Subarjo</div><div class="pelapor-phone">0812-3456-7890</div></td>
+                  <td>Pencurian</td>
+                  <td>Jl. Raya Wanasari No. 12</td>
+                  <td>12 Okt 2023</td>
+                  <td><span class="badge badge-wait">Menunggu Verifikasi</span></td>
+                  <td>
+                    <div class="action-icons">
+                      <button onclick="showAdminPage('detail')" title="Lihat"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                      <button class="gray" title="Edit"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg></button>
+                      <button class="red" title="Hapus" onclick="openModal()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="kode-col">#PG-0041</td>
+                  <td><div class="pelapor-name">Siti Aminah</div><div class="pelapor-phone">0821-9876-5432</div></td>
+                  <td>Lalu Lintas</td>
+                  <td>Perempatan Lampu Merah</td>
+                  <td>11 Okt 2023</td>
+                  <td><span class="badge badge-proses">Diproses</span></td>
+                  <td><div class="action-icons"><button onclick="showAdminPage('detail')"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button><button class="gray"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg></button><button class="red" onclick="openModal()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></div></td>
+                </tr>
+                <tr>
+                  <td class="kode-col">#PG-0038</td>
+                  <td><div class="pelapor-name">Bambang Wijaya</div><div class="pelapor-phone">0857-1122-3344</div></td>
+                  <td>Gangguan Kamtibmas</td>
+                  <td>Desa Karang Rejo RT 05</td>
+                  <td>09 Okt 2023</td>
+                  <td><span class="badge badge-selesai">Selesai</span></td>
+                  <td><div class="action-icons"><button onclick="showAdminPage('detail')"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button><button class="gray"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg></button><button class="red" onclick="openModal()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></div></td>
+                </tr>
+                <tr>
+                  <td class="kode-col">#PG-0035</td>
+                  <td><div class="pelapor-name">Dewi Lestari</div><div class="pelapor-phone">0899-4455-6677</div></td>
+                  <td>Pencurian</td>
+                  <td>Pasar Wanasari</td>
+                  <td>05 Okt 2023</td>
+                  <td><span class="badge badge-tolak">Ditolak</span></td>
+                  <td><div class="action-icons"><button onclick="showAdminPage('detail')"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button><button class="gray"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg></button><button class="red" onclick="openModal()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></div></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="pagination-row">
+              <span>Menampilkan 1 sampai 4 dari 124 pengaduan</span>
+              <div class="pagination-btns">
+                <button class="pg-btn">‹</button>
+                <button class="pg-btn active">1</button>
+                <button class="pg-btn">2</button>
+                <button class="pg-btn">3</button>
+                <button class="pg-btn">...</button>
+                <button class="pg-btn">31</button>
+                <button class="pg-btn">›</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-footer">
+          <div class="left"><strong>Polsek Wanasari E-Pengaduan</strong><br/>© 2023 Kepolisian Sektor Wanasari. Hak Cipta Dilindungi.</div>
+          <div class="right">Legal Disclaimer: Dashboard ini hanya untuk penggunaan internal personil Kepolisian Sektor. Segala akses tidak sah akan ditindaklanjuti sesuai hukum yang berlaku.</div>
+        </div>
+      </div>
+
+      <!-- ===== DETAIL PENGADUAN ===== -->
+      <div id="page-detail" class="admin-page">
+        <div class="topbar">
+          <button class="topbar-back" onclick="showAdminPage('data')">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Detail Pengaduan
+          </button>
+          <div class="topbar-right">
+            <div class="admin-info"><div class="name">Admin Polsek Wanasari</div><div class="role">Petugas Piket</div></div>
+            <div class="avatar"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          </div>
+        </div>
+
+        <div style="padding:28px 32px;">
+          <div class="detail-header">
+            <div>
+              <div class="sub">NOMOR PENGADUAN</div>
+              <div class="kode-big">#WNS-20231027-0042</div>
+            </div>
+            <div class="detail-header-right">
+              <span class="badge badge-proses" style="font-size:13px;padding:6px 16px;">● Diproses</span>
+              <div class="time-lbl">Diterima: 27 Okt 2023, 14:20 WIB</div>
+            </div>
+          </div>
+
+          <div class="detail-grid">
+            <div>
+              <!-- Data Pelapor -->
+              <div class="section-block">
+                <h4>
+                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  Data Pelapor
+                </h4>
+                <div class="info-grid">
+                  <div class="info-item"><div class="lbl">Nama Lengkap</div><div class="val">Bambang Wijaya</div></div>
+                  <div class="info-item"><div class="lbl">Nomor Telepon</div><div class="val">+62 812-3456-7890</div></div>
+                  <div class="info-item full"><div class="lbl">Alamat Sesuai KTP</div><div class="val">Jl. Melati No. 45, Desa Wanasari, Kec. Wanasari, Kabupaten Brebes, Jawa Tengah 52252</div></div>
+                </div>
+              </div>
+              <!-- Data Kejadian -->
+              <div class="section-block">
+                <h4>
+                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  Data Kejadian
+                </h4>
+                <div class="info-grid">
+                  <div class="info-item"><div class="lbl">Kategori</div><div class="val"><span style="background:#eef2ff;color:var(--blue);padding:4px 12px;border-radius:6px;font-size:12px;font-weight:600;">Pencurian (Curat/Curanmor)</span></div></div>
+                  <div class="info-item"><div class="lbl">Waktu Kejadian</div><div class="val">26 Okt 2023, ± 23:30 WIB</div></div>
+                  <div class="info-item full"><div class="lbl">Lokasi Spesifik</div><div class="val">Halaman parkir depan Toko Kelontong Barokah, Jl. Raya Wanasari km. 5</div></div>
+                </div>
+              </div>
+              <!-- Kronologi -->
+              <div class="section-block">
+                <h4>
+                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  Kronologi
+                </h4>
+                <div class="kronologi-text">
+                  "Saya memarkir sepeda motor Honda Vario (G 1234 ABC) di depan toko untuk membeli perlengkapan mandi sekitar pukul 23:25 WIB. Kondisi toko saat itu mulai sepi namun lampu jalan masih terang. Setelah kurang lebih 10 menit saya keluar, motor saya sudah tidak ada di lokasi semula. Saya sempat bertanya ke warga sekitar, namun tidak ada yang melihat kejadian pastinya. Kunci motor masih saya bawa."
+                </div>
+              </div>
+              <!-- Bukti -->
+              <div class="section-block">
+                <h4>
+                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+                  Bukti Pengaduan
+                </h4>
+                <div class="bukti-grid">
+                  <div class="bukti-item img">📸<br/>Foto 1</div>
+                  <div class="bukti-item img">📸<br/>Foto 2</div>
+                  <div class="bukti-item doc">📄<br/>STNK_Bambang.pdf</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tindak Lanjut -->
+            <div>
+              <div class="tl-card">
+                <h4>
+                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Tindak Lanjut
+                </h4>
+                <label class="tl-label">Ubah Status</label>
+                <select class="tl-select">
+                  <option>Diproses</option>
+                  <option>Menunggu Verifikasi</option>
+                  <option>Selesai</option>
+                  <option>Ditolak</option>
+                </select>
+                <label class="tl-label">Catatan Admin</label>
+                <textarea class="tl-textarea" placeholder="Masukkan detail penanganan atau alasan perubahan status..."></textarea>
+                <button class="btn-simpan">
+                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                  Simpan Perubahan
+                </button>
+                <div class="tl-note">Perubahan status akan otomatis memberi notifikasi kepada pelapor.</div>
+              </div>
+
+              <div class="riwayat-card">
+                <h4>Riwayat Aktivitas</h4>
+                <div class="riwayat-item">
+                  <div class="riwayat-dot blue"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
+                  <div class="riwayat-text">
+                    <div class="r-title">Status diubah ke "Diproses"</div>
+                    <div class="r-sub">Oleh: Admin 1 • 2 jam yang lalu</div>
+                  </div>
+                </div>
+                <div class="riwayat-item">
+                  <div class="riwayat-dot teal"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+                  <div class="riwayat-text">
+                    <div class="r-title">Pengaduan dibuka</div>
+                    <div class="r-sub">Oleh: Admin 1 • 3 jam yang lalu</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-footer" style="margin-top:20px;">
+          <div class="left">© 2023 Kepolisian Sektor Wanasari. Hak Cipta Dilindungi.</div>
+          <div class="right">KREDIBILITAS • INTEGRITAS • TRANSPARANSI</div>
+        </div>
+      </div>
+
+      <!-- ===== KATEGORI PENGADUAN ===== -->
+      <div id="page-kategori" class="admin-page">
+        <div class="topbar">
+          <div><h2>Kategori Pengaduan</h2></div>
+          <div class="topbar-right">
+            <div class="admin-info"><div class="name">Admin Polsek Wanasari</div><div class="role">Administrator Utama</div></div>
+            <div class="avatar"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          </div>
+        </div>
+
+        <div style="padding:28px 32px;">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;">
+            <div>
+              <h3 style="font-size:18px;font-weight:800;margin-bottom:4px;">Manajemen Kategori</h3>
+              <p style="font-size:13px;color:var(--gray-600);">Kelola daftar kategori laporan masyarakat untuk sistem E-Pengaduan.</p>
+            </div>
+            <button class="btn-tambah">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Tambah Kategori
+            </button>
+          </div>
+
+          <div class="kat-stats">
+            <div class="kat-stat-card">
+              <div><div class="ks-label">TOTAL KATEGORI</div><div class="ks-value">12</div></div>
+              <div class="ks-icon"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div>
+            </div>
+            <div class="kat-stat-card">
+              <div><div class="ks-label">KATEGORI AKTIF</div><div class="ks-value" style="color:var(--green);">10</div></div>
+              <div class="ks-icon green"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+            </div>
+            <div class="kat-stat-card">
+              <div><div class="ks-label">PALING SERING DILAPORKAN</div><div class="ks-value" style="font-size:16px;margin-top:4px;">Kehilangan Barang</div></div>
+              <div class="ks-icon purple"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+            </div>
+          </div>
+
+          <div class="table-section">
+            <div class="kat-search-row">
+              <input type="text" class="search-box" placeholder="Cari kategori..." />
+              <button class="btn-filter">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                Filter
+              </button>
+            </div>
+            <table>
+              <thead>
+                <tr><th>NO</th><th>NAMA KATEGORI</th><th>DESKRIPSI</th><th>STATUS</th><th>AKSI</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>1</td><td><div style="font-weight:700;">Kehilangan Barang</div><div style="font-size:11px;color:var(--gray-600);">Pelaporan barang hilang/tercecer</div></td><td style="color:var(--gray-600);">Layanan untuk masyarakat yang kehilangan barang di tempat umum...</td><td><span class="badge badge-aktif">Aktif</span></td><td><div class="action-icons"><button class="gray"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="red" onclick="openModal()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M9 6V4h6v2"/></svg></button></div></td></tr>
+                <tr><td>2</td><td><div style="font-weight:700;">Gangguan Keamanan</div><div style="font-size:11px;color:var(--gray-600);">Laporan kriminal/keributan</div></td><td style="color:var(--gray-600);">Pelaporan tindakan kriminalitas, perkelahian atau ancaman...</td><td><span class="badge badge-aktif">Aktif</span></td><td><div class="action-icons"><button class="gray"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="red" onclick="openModal()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M9 6V4h6v2"/></svg></button></div></td></tr>
+                <tr><td>3</td><td><div style="font-weight:700;">Pungutan Liar</div><div style="font-size:11px;color:var(--gray-600);">Laporan penyalahgunaan wewenang</div></td><td style="color:var(--gray-600);">Aduan masyarakat terkait pemerasan atau pungutan tidak resmi...</td><td><span class="badge badge-aktif">Aktif</span></td><td><div class="action-icons"><button class="gray"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="red" onclick="openModal()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M9 6V4h6v2"/></svg></button></div></td></tr>
+                <tr><td>4</td><td><div style="font-weight:700;">Kecelakaan Lalu Lintas</div><div style="font-size:11px;color:var(--gray-600);">Informasi laka lantas jalan raya</div></td><td style="color:var(--gray-600);">Laporan terjadinya kecelakaan di wilayah hukum Polsek Wanasari...</td><td><span class="badge badge-nonaktif">Nonaktif</span></td><td><div class="action-icons"><button class="gray"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="red" onclick="openModal()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M9 6V4h6v2"/></svg></button></div></td></tr>
+                <tr><td>5</td><td><div style="font-weight:700;">Pelayanan Publik</div><div style="font-size:11px;color:var(--gray-600);">Aduan terkait pelayanan kantor</div></td><td style="color:var(--gray-600);">Saran atau keluhan mengenai kualitas pelayanan kepolisian...</td><td><span class="badge badge-aktif">Aktif</span></td><td><div class="action-icons"><button class="gray"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="red" onclick="openModal()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M9 6V4h6v2"/></svg></button></div></td></tr>
+              </tbody>
+            </table>
+            <div class="pagination-row">
+              <span>Menampilkan 1-5 dari 12 kategori</span>
+              <div class="pagination-btns">
+                <button class="pg-btn">‹</button>
+                <button class="pg-btn active">1</button>
+                <button class="pg-btn">2</button>
+                <button class="pg-btn">3</button>
+                <button class="pg-btn">›</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-footer">
+          <div class="left">© 2024 Polsek Wanasari. Hak Cipta Dilindungi.</div>
+          <div class="right">Legal Disclaimer: Seluruh data kategori pengaduan diatur sesuai dengan Peraturan Kepala Kepolisian Negara Republik Indonesia No. 2 Tahun 2022 tentang Penanganan Pengaduan Masyarakat.</div>
+        </div>
+      </div>
+
+      <!-- ===== PROFIL ADMIN ===== -->
+      <div id="page-profil" class="admin-page">
+        <div class="topbar">
+          <div><h2>Profil Admin</h2></div>
+          <div class="topbar-right">
+            <div class="admin-info"><div class="name">Admin Polsek Wanasari</div></div>
+            <div class="avatar"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          </div>
+        </div>
+
+        <div style="padding:28px 32px;">
+          <div class="profil-grid">
+            <div>
+              <div class="profil-card">
+                <div class="avatar-big">
+                  <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  <div class="avatar-cam"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+                </div>
+                <div class="profil-name">Aiptu Bambang S.</div>
+                <div class="profil-handle">@admin_wanasari</div>
+                <div class="role-badge">
+                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="14" height="14"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Admin Pengaduan
+                </div>
+                <div class="profil-meta">
+                  <div class="meta-row"><span class="mk">Terakhir Login</span><span class="mv">Hari ini, 08:45</span></div>
+                  <div class="meta-row"><span class="mk">Status Akun</span><span class="mv green">Aktif</span></div>
+                </div>
+              </div>
+              <div class="security-card">
+                <h5>
+                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  Panduan Keamanan
+                </h5>
+                <p>Gunakan kata sandi yang kuat dengan kombinasi huruf, angka, dan simbol. Jangan berikan kredensial Anda kepada siapapun.</p>
+              </div>
+            </div>
+
+            <div class="settings-card">
+              <h3>
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                Pengaturan Profil
+              </h3>
+
+              <div class="settings-section">INFORMASI DASAR</div>
+              <div class="settings-row">
+                <div class="s-group">
+                  <label>Nama Lengkap</label>
+                  <input type="text" value="Aiptu Bambang S." />
+                </div>
+                <div class="s-group">
+                  <label>Username</label>
+                  <input type="text" value="@admin_wanasari" />
+                </div>
+              </div>
+
+              <div class="settings-section">UBAH KATA SANDI</div>
+              <div class="s-group full" style="margin-bottom:14px;">
+                <label>Kata Sandi Lama</label>
+                <input type="password" value="••••••••" />
+              </div>
+              <div class="settings-row">
+                <div class="s-group">
+                  <label>Kata Sandi Baru</label>
+                  <input type="password" value="••••••••" />
+                </div>
+                <div class="s-group">
+                  <label>Konfirmasi Kata Sandi Baru</label>
+                  <input type="password" value="••••••••" />
+                </div>
+              </div>
+
+              <button class="btn-simpan-profil">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                Simpan Perubahan
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-footer" style="margin-top:28px;">
+          <div class="left"><strong>E-Pengaduan Polsek Wanasari</strong><br/>© 2024 Kepolisian Sektor Wanasari. Hak Cipta Dilindungi.</div>
+          <div class="right">Legal Disclaimer: Sistem ini hanya digunakan untuk kepentingan internal administrasi kepolisian dan pengarsipan laporan masyarakat secara digital sesuai SOP yang berlaku.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL KONFIRMASI HAPUS ===== -->
+<div class="modal-overlay" id="delete-modal">
+  <div class="modal">
+    <h3>Hapus Data?</h3>
+    <p>Data pengaduan ini akan dihapus secara permanen dari sistem. Tindakan ini tidak dapat dibatalkan.</p>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">Batal</button>
+      <button class="btn-confirm" onclick="closeModal()">Hapus</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+[
+  {
+    "id": "1781203589096",
+    "kode": "WNS-2026-00001",
+    "namaLengkap": "Farrel Gaska Haryadi",
+    "noHp": "087789484000",
+    "alamat": "Jalan. Muhajirin II",
+    "kategori": "Kehilangan Barang",
+    "lokasi": "Klampok",
+    "tanggalKejadian": "2026-06-12",
+    "kronologi": "kacau men",
+    "bukti": {
+      "namaFile": "1781203589060-773239375.jpg",
+      "namaAsli": "BUNGA 3.jpg",
+      "url": "/uploads/1781203589060-773239375.jpg"
+    },
+    "status": "Selesai",
+    "catatanAdmin": "mantep, omw",
+    "createdAt": "2026-06-11T18:46:29.093Z",
+    "updatedAt": "2026-06-11T18:47:36.991Z",
+    "riwayat": [
+      {
+        "status": "Selesai",
+        "catatan": "mantep, omw",
+        "waktu": "2026-06-11T18:47:36.991Z"
+      },
+      {
+        "status": "Menunggu Verifikasi",
+        "catatan": "Laporan dikirim oleh pelapor.",
+        "waktu": "2026-06-11T18:46:29.093Z"
+      }
+    ]
+  }
+]
